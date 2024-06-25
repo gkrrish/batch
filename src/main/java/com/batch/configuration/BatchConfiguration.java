@@ -19,11 +19,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import com.batch.listner.JobProcessListener;
-import com.batch.listner.JobReaderListener;
-import com.batch.listner.JobSkipListener;
-import com.batch.listner.JobStatusListener;
-import com.batch.listner.JobWriterListener;
+import com.batch.listener.JobProcessListener;
+import com.batch.listener.JobReaderListener;
+import com.batch.listener.JobSkipListener;
+import com.batch.listener.JobStatusListener;
+import com.batch.listener.JobWriterListener;
 import com.batch.process.NewspaperItemProcessor;
 import com.batch.reader.NewspaperItemReader;
 import com.batch.service.NewspaperService;
@@ -31,7 +31,6 @@ import com.batch.writer.NewspaperItemWriter;
 
 @Configuration
 @EnableBatchProcessing
-@SuppressWarnings("unchecked")
 public class BatchConfiguration {
 
     private final JobRepository jobRepository;
@@ -40,6 +39,7 @@ public class BatchConfiguration {
     @Autowired
     private NewspaperService newspaperService;
 
+    @Autowired
     public BatchConfiguration(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
         this.jobRepository = jobRepository;
         this.transactionManager = transactionManager;
@@ -59,9 +59,9 @@ public class BatchConfiguration {
     public Step distributionStep() {
         return new StepBuilder("distributionStep", jobRepository)
                 .<List<String>, List<String>>chunk(1, transactionManager)
-                .reader((ItemReader<? extends List<String>>) newspaperItemReader())
-                .processor((ItemProcessor<? super List<String>, ? extends List<String>>) newspaperItemProcessor())
-                .writer((ItemWriter<? super List<String>>) newspaperItemWriter())
+                .reader(newspaperItemReader())
+                .processor(newspaperItemProcessor())
+                .writer(newspaperItemWriter())
                 .listener(new JobReaderListener())
                 .listener(new JobProcessListener())
                 .listener(new JobWriterListener())
@@ -71,22 +71,21 @@ public class BatchConfiguration {
                 .build();
     }
 
-    
     @Bean
     @StepScope
-    public NewspaperItemReader newspaperItemReader() {
+    public ItemReader<List<String>> newspaperItemReader() {
         return new NewspaperItemReader(newspaperService);
     }
 
     @Bean
     @StepScope
-    public NewspaperItemProcessor newspaperItemProcessor() {
+    public ItemProcessor<List<String>, List<String>> newspaperItemProcessor() {
         return new NewspaperItemProcessor();
     }
 
     @Bean
     @StepScope
-    public NewspaperItemWriter newspaperItemWriter() {
+    public ItemWriter<List<String>> newspaperItemWriter() {
         return new NewspaperItemWriter(newspaperService);
     }
 }
