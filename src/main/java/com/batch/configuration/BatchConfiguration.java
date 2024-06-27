@@ -72,7 +72,7 @@ public class BatchConfiguration {
     @Bean
     @StepScope
     public ItemReader<List<String>> newspaperItemReader() {
-        return new NewspaperItemReader();
+        return new NewspaperItemReader(newspaperService);
     }
 
     @Bean
