@@ -7,15 +7,18 @@ import org.springframework.batch.core.SkipListener;
 public class NewspaperDistributionSkipListener implements SkipListener<List<String>, List<String>> {
 
 	@Override
-	public void onSkipInRead(Throwable t) {
-	}
+    public void onSkipInRead(Throwable t) {
+        System.err.println("Skipped item during read due to: " + t.getMessage());
+    }
 
-	@Override
-	public void onSkipInWrite(List<String> item, Throwable t) {
-	}
+    @Override
+    public void onSkipInWrite(List<String> item, Throwable t) {
+        System.err.println("Skipped item during write: " + item + " due to: " + t.getMessage());
+    }
 
-	@Override
-	public void onSkipInProcess(List<String> item, Throwable t) {
-	}
+    @Override
+    public void onSkipInProcess(List<String> item, Throwable t) {
+        System.err.println("Skipped item during process: " + item + " due to: " + t.getMessage());
+    }
 
 }

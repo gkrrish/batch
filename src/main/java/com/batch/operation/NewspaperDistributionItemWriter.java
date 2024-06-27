@@ -16,7 +16,7 @@ public class NewspaperDistributionItemWriter implements ItemWriter<List<String>>
 
 	@Override
 	public void write(Chunk<? extends List<String>> chunk) throws Exception {
-
+		 chunk.getItems().forEach(System.out::println);
 	}
 
 }

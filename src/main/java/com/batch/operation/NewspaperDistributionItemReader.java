@@ -19,7 +19,9 @@ public class NewspaperDistributionItemReader implements ItemReader<List<String>>
 
 	@Override
 	public List<String> read()throws Exception, UnexpectedInputException, ParseException, NonTransientResourceException {
-		return null;
+		String currentTimeBatchId = newspaperService.getCurrentTimeBatchId();
+		System.out.println("********************\n : "+currentTimeBatchId);
+		 return List.of(currentTimeBatchId);
 	}
 
 }

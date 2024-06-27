@@ -33,16 +33,15 @@ import com.batch.service.NewspaperDistributionService;
 @EnableBatchProcessing
 public class BatchConfiguration {
 
-    private final JobRepository jobRepository;
-    private final PlatformTransactionManager transactionManager;
-
-    @Autowired
-    private NewspaperDistributionService newspaperService;
-
-    public BatchConfiguration(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
-        this.jobRepository = jobRepository;
-        this.transactionManager = transactionManager;
-    }
+	@Autowired
+	private JobRepository jobRepository;
+	
+	@Autowired
+	private PlatformTransactionManager transactionManager;
+	
+	@Autowired
+	private NewspaperDistributionService newspaperService;
+    
 
     @Bean(name = "distributeJob")
     public Job distributeJob(@Qualifier("distributionStep") Step distributionStep) {
