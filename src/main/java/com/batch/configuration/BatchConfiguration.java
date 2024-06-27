@@ -10,6 +10,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
@@ -19,30 +20,29 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.batch.items.NewspaperItemProcessor;
+import com.batch.items.NewspaperItemReader;
+import com.batch.items.NewspaperItemWriter;
 import com.batch.listener.NewspaperDistributionJobStatusListener;
 import com.batch.listener.NewspaperDistributionProcessListener;
 import com.batch.listener.NewspaperDistributionReaderListener;
 import com.batch.listener.NewspaperDistributionSkipListener;
 import com.batch.listener.NewspaperDistributionWriterListener;
-import com.batch.operation.NewspaperDistributionItemProcessor;
-import com.batch.operation.NewspaperDistributionItemReader;
-import com.batch.operation.NewspaperDistributionItemWriter;
 import com.batch.service.NewspaperDistributionService;
 
 @Configuration
 @EnableBatchProcessing
 public class BatchConfiguration {
 
-	@Autowired
-	private JobRepository jobRepository;
-	
-	@Autowired
-	private PlatformTransactionManager transactionManager;
-	
-	@Autowired
-	private NewspaperDistributionService newspaperService;
+    @Autowired
+    private JobRepository jobRepository;
     
+    @Autowired
+    private PlatformTransactionManager transactionManager;
 
+    @Autowired
+    private NewspaperDistributionService newspaperService;
+    
     @Bean(name = "distributeJob")
     public Job distributeJob(@Qualifier("distributionStep") Step distributionStep) {
         return new JobBuilder("distributeJob", jobRepository)
@@ -65,25 +65,25 @@ public class BatchConfiguration {
                 .listener(new NewspaperDistributionWriterListener())
                 .listener(new NewspaperDistributionSkipListener())
                 .faultTolerant()
-                .skipPolicy(null) // Define skip policy as needed
+                .skipPolicy(new AlwaysSkipItemSkipPolicy()) // Define skip policy as needed
                 .build();
     }
 
     @Bean
     @StepScope
     public ItemReader<List<String>> newspaperItemReader() {
-        return new NewspaperDistributionItemReader(newspaperService);
+        return new NewspaperItemReader();
     }
 
     @Bean
     @StepScope
     public ItemProcessor<List<String>, List<String>> newspaperItemProcessor() {
-        return new NewspaperDistributionItemProcessor();
+        return new NewspaperItemProcessor();
     }
 
     @Bean
     @StepScope
     public ItemWriter<List<String>> newspaperItemWriter() {
-        return new NewspaperDistributionItemWriter(newspaperService);
+        return new NewspaperItemWriter(newspaperService);
     }
 }

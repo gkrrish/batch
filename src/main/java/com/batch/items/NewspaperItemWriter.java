@@ -1,4 +1,4 @@
-package com.batch.operation;
+package com.batch.items;
 
 import java.util.List;
 
@@ -7,10 +7,10 @@ import org.springframework.batch.item.ItemWriter;
 
 import com.batch.service.NewspaperDistributionService;
 
-public class NewspaperDistributionItemWriter implements ItemWriter<List<String>> {
+public class NewspaperItemWriter implements ItemWriter<List<String>> {
 	NewspaperDistributionService newspaperService;
 
-	public NewspaperDistributionItemWriter(NewspaperDistributionService newspaperService) {
+	public NewspaperItemWriter(NewspaperDistributionService newspaperService) {
 		this.newspaperService = newspaperService;
 	}
 
