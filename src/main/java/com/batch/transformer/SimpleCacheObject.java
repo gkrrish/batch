@@ -1,8 +1,10 @@
 package com.batch.transformer;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 public class SimpleCacheObject {
     private Long batchTime;
     private String state;

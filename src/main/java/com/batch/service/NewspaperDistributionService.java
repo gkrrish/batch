@@ -10,7 +10,7 @@ import com.batch.repository.BatchJobRepository;
 @Service
 public class NewspaperDistributionService {
 
-	private final int BEFORE_TIME_IN_MINUTES = 5;
+	private final int BEFORE_TIME_IN_MINUTES = 15;
 
 	@Autowired
 	BatchJobRepository batchJobRepository;
