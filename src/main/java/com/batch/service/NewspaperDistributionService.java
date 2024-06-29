@@ -5,22 +5,16 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.batch.repository.BatchJobRepository;
-
 @Service
 public class NewspaperDistributionService {
 
-	private final int BEFORE_TIME_IN_MINUTES = 15;
+	private final int BEFORE_TIME_IN_MINUTES = 29;
 
 	@Autowired
-	BatchJobRepository batchJobRepository;
+	MasterBatchJobRetrivingCacheService masterBatchJobRetrivingCacheService;
 
 	public String getCurrentTimeBatchId() {
-		Optional<Long> currentBatchId = batchJobRepository.findCurrentBatchId(BEFORE_TIME_IN_MINUTES);//need to validate this query for different scenarios
-
-		if (currentBatchId.isPresent()) {
-			return currentBatchId.get().toString();
-		} else 
-			return "Sorry ! Our radars were not able to be found near the delivery scheduled time.";
-		}
+		Optional<Long> currentBatchId = masterBatchJobRetrivingCacheService.findCurrentBatchId(BEFORE_TIME_IN_MINUTES);
+		return currentBatchId.isPresent() ? currentBatchId.get().toString() : "Sorry! Our systems were unable to find any batches scheduled near the delivery time.";
+	}
 }

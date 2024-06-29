@@ -29,6 +29,7 @@ import com.batch.listener.NewspaperDistributionReaderListener;
 import com.batch.listener.NewspaperDistributionSkipListener;
 import com.batch.listener.NewspaperDistributionWriterListener;
 import com.batch.service.NewspaperDistributionService;
+import com.batch.services.items.ReaderService;
 
 @Configuration
 @EnableBatchProcessing
@@ -42,6 +43,8 @@ public class BatchConfiguration {
 
     @Autowired
     private NewspaperDistributionService newspaperService;
+    @Autowired
+    private ReaderService readerService;
     
     @Bean(name = "distributeJob")
     public Job distributeJob(@Qualifier("distributionStep") Step distributionStep) {
@@ -72,7 +75,7 @@ public class BatchConfiguration {
     @Bean
     @StepScope
     public ItemReader<List<String>> newspaperItemReader() {
-        return new NewspaperItemReader(newspaperService);
+        return new NewspaperItemReader(readerService);
     }
 
     @Bean

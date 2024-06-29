@@ -1,8 +1,10 @@
 package com.batch.repository;
 
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public interface BatchJobRepository {
+import com.batch.model.BatchJob;
 
-	Optional<Long> findCurrentBatchId(int minutesBeforeSearch);
+@Repository
+public interface BatchJobRepository extends JpaRepository<BatchJob, Long> {
 }
