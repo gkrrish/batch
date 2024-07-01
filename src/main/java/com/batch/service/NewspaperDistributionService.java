@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class NewspaperDistributionService {
 
-	private final int BEFORE_TIME_IN_MINUTES = 29;
+	private final int BEFORE_TIME_IN_MINUTES = 20;
 
 	@Autowired
 	MasterBatchJobRetrivingCacheService masterBatchJobRetrivingCacheService;

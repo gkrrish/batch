@@ -1,10 +1,14 @@
 package com.batch.service;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import com.batch.model.RedisCacheObject;
+import com.batch.model.SimpleCacheObject;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -13,10 +17,18 @@ public class RedisCacheService {
 	@Autowired
 	private StringRedisTemplate redisTemplate;
 
-	public RedisCacheObject getRedisCachedObject(Long batchId) {
+	public List<SimpleCacheObject> getRedisCachedObject(Long batchId) {
+		 List<SimpleCacheObject> simpleCacheObjects = null ;
 
-		String key = "batch:" + batchId + ":state:*:language:*";
-		return getDataFromCache(key);
+		Set<String> keys = redisTemplate.keys("batch:" + batchId + ":state:*:language:*");
+		
+		if (keys != null) {
+			for (String key : keys) {
+				simpleCacheObjects = SimpleCacheObject.transform(getDataFromCache(key));
+			}
+		}
+
+		return simpleCacheObjects;
 
 	}
 

@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.batch.external.ExternalCacheUpdateService;
-import com.batch.model.RedisCacheObject;
 import com.batch.service.NewspaperDistributionService;
 import com.batch.service.RedisCacheService;
+import com.batch.transformer.SimpleCacheObject;
 
 @Service
 public class ReaderService {
@@ -34,9 +34,9 @@ public class ReaderService {
 				externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(Long.parseLong(currentTimeBatchId));//Returns String, parse to Long
 				long batchId = Long.parseLong(externalRedisServiceResponse.replaceAll("[^\\d]", ""));//OK--gives the batchId
 
-				RedisCacheObject redisCachedObject = redisCacheService.getRedisCachedObject(batchId);
+				List<SimpleCacheObject> redisSimpleCachedObject = redisCacheService.getRedisCachedObject(batchId);
 				
-				System.out.println("********\nRedisCacheObject : "+redisCachedObject+"\n***********");
+				System.out.println("********\nRedisCacheObject : "+redisSimpleCachedObject+"\n***********");
 				
 			} catch (NumberFormatException e) {
 				throw new RuntimeException("Unable to update the Redis Cache , there is issue with External Redis Serive :"+e.getMessage()+" : "+externalRedisServiceResponse);
