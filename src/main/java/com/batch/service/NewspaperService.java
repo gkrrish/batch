@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class NewspaperDistributionService {
+public class NewspaperService {
 
-	private final int BEFORE_TIME_IN_MINUTES = 20;
+	private final int BEFORE_TIME_IN_MINUTES = 30;
 
 	@Autowired
 	MasterBatchJobRetrivingCacheService masterBatchJobRetrivingCacheService;

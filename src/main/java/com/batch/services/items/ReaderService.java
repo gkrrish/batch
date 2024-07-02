@@ -4,11 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.ResourceAccessException;
 
 import com.batch.external.ExternalCacheUpdateService;
-import com.batch.service.NewspaperDistributionService;
+import com.batch.model.SimpleCacheObject;
+import com.batch.service.NewspaperService;
 import com.batch.service.RedisCacheService;
-import com.batch.transformer.SimpleCacheObject;
 
 @Service
 public class ReaderService {
@@ -18,7 +19,7 @@ public class ReaderService {
 	@Autowired
 	private RedisCacheService redisCacheService;
 	@Autowired
-	NewspaperDistributionService newspaperService;
+	NewspaperService newspaperService;
 
 	private boolean batchProcessed = false;
 	
@@ -39,8 +40,12 @@ public class ReaderService {
 				System.out.println("********\nRedisCacheObject : "+redisSimpleCachedObject+"\n***********");
 				
 			} catch (NumberFormatException e) {
-				throw new RuntimeException("Unable to update the Redis Cache , there is issue with External Redis Serive :"+e.getMessage()+" : "+externalRedisServiceResponse);
-			}catch (Exception e) {
+				System.out.println(currentTimeBatchId);
+				throw new RuntimeException(currentTimeBatchId);
+			}catch(ResourceAccessException resourceAccessException) {
+				System.out.println(resourceAccessException.getMessage());
+			}
+			catch (Exception e) {
 				throw new RuntimeException("Have the issue : "+e.getMessage());
 			}
 

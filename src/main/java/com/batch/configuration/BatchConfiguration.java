@@ -28,7 +28,7 @@ import com.batch.listener.NewspaperDistributionProcessListener;
 import com.batch.listener.NewspaperDistributionReaderListener;
 import com.batch.listener.NewspaperDistributionSkipListener;
 import com.batch.listener.NewspaperDistributionWriterListener;
-import com.batch.service.NewspaperDistributionService;
+import com.batch.service.NewspaperService;
 import com.batch.services.items.ReaderService;
 
 @Configuration
@@ -42,7 +42,7 @@ public class BatchConfiguration {
     private PlatformTransactionManager transactionManager;
 
     @Autowired
-    private NewspaperDistributionService newspaperService;
+    private NewspaperService newspaperService;
     @Autowired
     private ReaderService readerService;
     

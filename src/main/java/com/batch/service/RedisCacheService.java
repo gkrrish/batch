@@ -37,8 +37,13 @@ public class RedisCacheService {
 		if (data != null) {
 			try {
 				return new ObjectMapper().readValue(data, RedisCacheObject.class);
-				
-			} catch (Exception e) { e.getMessage(); }
+
+			} catch (Exception e) {
+				e.getMessage();
+			}
+		}else if(data==null || data.isEmpty()) {
+			System.out.println(" Cache is Empty or external data is Empty : key not found on Redis "+key);
+			throw new RuntimeException(" Cache is Empty or external data is Empty : key not found on Redis "+key);
 		}
 		return null;
 	}

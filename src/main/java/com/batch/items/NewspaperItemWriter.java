@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 
-import com.batch.service.NewspaperDistributionService;
+import com.batch.service.NewspaperService;
 
 public class NewspaperItemWriter implements ItemWriter<List<String>> {
-	NewspaperDistributionService newspaperService;
+	NewspaperService newspaperService;
 
-	public NewspaperItemWriter(NewspaperDistributionService newspaperService) {
+	public NewspaperItemWriter(NewspaperService newspaperService) {
 		this.newspaperService = newspaperService;
 	}
 
