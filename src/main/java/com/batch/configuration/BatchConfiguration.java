@@ -28,7 +28,9 @@ import com.batch.listener.NewspaperDistributionProcessListener;
 import com.batch.listener.NewspaperDistributionReaderListener;
 import com.batch.listener.NewspaperDistributionSkipListener;
 import com.batch.listener.NewspaperDistributionWriterListener;
+import com.batch.model.SimpleCacheObject;
 import com.batch.service.NewspaperService;
+import com.batch.services.items.ProcessService;
 import com.batch.services.items.ReaderService;
 
 @Configuration
@@ -45,6 +47,8 @@ public class BatchConfiguration {
     private NewspaperService newspaperService;
     @Autowired
     private ReaderService readerService;
+    @Autowired
+    private ProcessService processService;
     
     @Bean(name = "distributeJob")
     public Job distributeJob(@Qualifier("distributionStep") Step distributionStep) {
@@ -59,7 +63,7 @@ public class BatchConfiguration {
     @Bean(name = "distributionStep")
     public Step distributionStep() {
         return new StepBuilder("distributionStep", jobRepository)
-                .<List<String>, List<String>>chunk(1, transactionManager)
+                .<List<SimpleCacheObject>, List<String>>chunk(1, transactionManager)
                 .reader(newspaperItemReader())
                 .processor(newspaperItemProcessor())
                 .writer(newspaperItemWriter())
@@ -74,14 +78,14 @@ public class BatchConfiguration {
 
     @Bean
     @StepScope
-    public ItemReader<List<String>> newspaperItemReader() {
+    public ItemReader<List<SimpleCacheObject>> newspaperItemReader() {
         return new NewspaperItemReader(readerService);
     }
 
     @Bean
     @StepScope
-    public ItemProcessor<List<String>, List<String>> newspaperItemProcessor() {
-        return new NewspaperItemProcessor();
+    public ItemProcessor<List<SimpleCacheObject>, List<String>> newspaperItemProcessor() {
+        return new NewspaperItemProcessor(processService);
     }
 
     @Bean

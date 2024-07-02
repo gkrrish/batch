@@ -1,5 +1,6 @@
 package com.batch.services.items;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ public class ReaderService {
 	private boolean batchProcessed = false;
 	
 	
-	public List<String> read() throws Exception {
+	public List<SimpleCacheObject> read() throws Exception {
+		List<SimpleCacheObject> redisSimpleCachedObject=new ArrayList<SimpleCacheObject>();
 		String externalRedisServiceResponse=null;
 
 		if (!batchProcessed) {
@@ -35,9 +37,7 @@ public class ReaderService {
 				externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(Long.parseLong(currentTimeBatchId));//Returns String, parse to Long
 				long batchId = Long.parseLong(externalRedisServiceResponse.replaceAll("[^\\d]", ""));//OK--gives the batchId
 
-				List<SimpleCacheObject> redisSimpleCachedObject = redisCacheService.getRedisCachedObject(batchId);
-				
-				System.out.println("********\nRedisCacheObject : "+redisSimpleCachedObject+"\n***********");
+				redisSimpleCachedObject = redisCacheService.getRedisCachedObject(batchId);
 				
 			} catch (NumberFormatException e) {
 				System.out.println(currentTimeBatchId);
@@ -49,7 +49,8 @@ public class ReaderService {
 				throw new RuntimeException("Have the issue : "+e.getMessage());
 			}
 
-			return List.of(currentTimeBatchId);
+			
+			return redisSimpleCachedObject;
 		}
 		return null;
 	}

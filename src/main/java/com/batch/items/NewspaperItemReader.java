@@ -4,9 +4,10 @@ import java.util.List;
 
 import org.springframework.batch.item.ItemReader;
 
+import com.batch.model.SimpleCacheObject;
 import com.batch.services.items.ReaderService;
 
-public class NewspaperItemReader implements ItemReader<List<String>> {
+public class NewspaperItemReader implements ItemReader<List<SimpleCacheObject>> {
 
 	ReaderService readerService;
 
@@ -15,9 +16,9 @@ public class NewspaperItemReader implements ItemReader<List<String>> {
 	}
 
 	@Override
-	public List<String> read() throws Exception {
+	public List<SimpleCacheObject> read() throws Exception {
 		return readerService.read();
 	}
-	//this class made very simplicity
+	//this class made for simplicity
 
 }
