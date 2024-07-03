@@ -63,7 +63,7 @@ public class BatchConfiguration {
     @Bean(name = "distributionStep")
     public Step distributionStep() {
         return new StepBuilder("distributionStep", jobRepository)
-                .<List<SimpleCacheObject>, List<String>>chunk(1, transactionManager)
+                .<List<SimpleCacheObject>, List<SimpleCacheObject>>chunk(1, transactionManager)
                 .reader(newspaperItemReader())
                 .processor(newspaperItemProcessor())
                 .writer(newspaperItemWriter())
@@ -84,13 +84,13 @@ public class BatchConfiguration {
 
     @Bean
     @StepScope
-    public ItemProcessor<List<SimpleCacheObject>, List<String>> newspaperItemProcessor() {
+    public ItemProcessor<List<SimpleCacheObject>, List<SimpleCacheObject>> newspaperItemProcessor() {
         return new NewspaperItemProcessor(processService);
     }
 
     @Bean
     @StepScope
-    public ItemWriter<List<String>> newspaperItemWriter() {
+    public ItemWriter<List<SimpleCacheObject>> newspaperItemWriter() {
         return new NewspaperItemWriter(newspaperService);
     }
 }

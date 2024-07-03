@@ -24,7 +24,7 @@ public class RedisCacheService {
 		
 		if (keys != null) {
 			for (String key : keys) {
-				simpleCacheObjects = SimpleCacheObject.transform(getDataFromCache(key));
+				simpleCacheObjects = SimpleCacheObject.transform(getDataFromCache(key), key);
 			}
 		}
 
@@ -47,4 +47,11 @@ public class RedisCacheService {
 		}
 		return null;
 	}
+	
+	public void evictBatchCache(String currentkey) {
+        Set<String> keys = redisTemplate.keys(currentkey);
+        if (keys != null) {
+            redisTemplate.delete(keys);
+        }
+    }
 }

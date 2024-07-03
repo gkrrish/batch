@@ -58,8 +58,10 @@ public class SimpleCacheObject {//this table doesn't have any constraints as of 
 	@Column(name = "creation_date", updatable = false, insertable = false)
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
+	
+	private String currentRedisKey;
     
-    public static List<SimpleCacheObject> transform(RedisCacheObject redisCacheObject) {
+    public static List<SimpleCacheObject> transform(RedisCacheObject redisCacheObject, String currentRedisKey) {
         List<SimpleCacheObject> simpleCacheObjects = new ArrayList<>();
 
         for (UserInfo user : redisCacheObject.getUsers()) {
@@ -75,6 +77,8 @@ public class SimpleCacheObject {//this table doesn't have any constraints as of 
                     simpleCacheObject.setNewspaperId(user.getNewspaperId());
                     simpleCacheObject.setNewspaperFileId(newspaper.getNewspaperFileId());
                     simpleCacheObject.setNewsPaperfileName(newspaper.getNewsPaperfileName());
+                    
+                    simpleCacheObject.setCurrentRedisKey(currentRedisKey);
 
                     simpleCacheObjects.add(simpleCacheObject);
                 }

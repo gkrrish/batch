@@ -29,32 +29,34 @@ public class MasterBatchJobRetrivingCacheService {
 		return batchJobRepository.findAll();
 	}
 
-	public Optional<Long> findCurrentBatchId(int minutesBeforeSearch) {//need to validate this query for different scenarios , check times very precisely.
+	public Optional<Long> findCurrentBatchId(int minutesBeforeSearch) {
 	    LocalTime now = LocalTime.now();
 	    List<BatchJob> batchJobs = getBatchJobs();
-	    
+
 	    Optional<Long> batchId = batchJobs.stream()
-				.map(job -> {
-
-					try {
-						LocalTime time = LocalTime.parse(job.getDeliveryTime().trim(),DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH));
-
-						long diff = ChronoUnit.MINUTES.between(time, now);
-						return (diff < 0 && -diff <= minutesBeforeSearch) ? Map.entry(-diff, job.getBatchId()) : null;
-
-					} catch (DateTimeParseException e) {
-						throw new RuntimeException("Error parsing time for job " + job.getBatchId(), e);
-					}
-				})
-	        
-	        .filter(Objects::nonNull) 
+	        .map(job -> {
+	            try {
+	                LocalTime deliveryTime = LocalTime.parse(job.getDeliveryTime().trim(), DateTimeFormatter.ofPattern("hh:mm a", Locale.ENGLISH));
+	                long diff = ChronoUnit.MINUTES.between(now, deliveryTime);
+	                if (diff < -720) {
+	                    diff += 1440;
+	                } else if (diff > 720) {
+	                    diff -= 1440;
+	                }
+	                return (diff >= 0 && diff <= minutesBeforeSearch) ? Map.entry(diff, job.getBatchId()) : null;
+	            } catch (DateTimeParseException e) {
+	                throw new RuntimeException("Error parsing time for job " + job.getBatchId(), e);
+	            }
+	        })
+	        .filter(Objects::nonNull)
 	        .min(Map.Entry.comparingByKey())
 	        .map(Map.Entry::getValue);
-	    
+
 	    return batchId;
 	}
 
-	@Transactional
+
+	@Transactional//belongs to ehCache
 	public void updateBatchJobAndClearsCache(BatchJob batchJob) {
 		batchJobRepository.save(batchJob);
 		evictCacheClearsCacheEmptyMethod();

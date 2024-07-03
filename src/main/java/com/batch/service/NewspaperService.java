@@ -13,10 +13,20 @@ public class NewspaperService {
 	private final int BEFORE_TIME_IN_MINUTES = 30;
 
 	@Autowired
-	MasterBatchJobRetrivingCacheService masterBatchJobRetrivingCacheService;
+	private MasterBatchJobRetrivingCacheService masterBatchJobRetrivingCacheService;
+	
+	@Autowired
+	private RedisCacheService redisCacheService;
 
 	public String getCurrentTimeBatchId() {
 		Optional<Long> currentBatchId = masterBatchJobRetrivingCacheService.findCurrentBatchId(BEFORE_TIME_IN_MINUTES);
 		return currentBatchId.isPresent() ? currentBatchId.get().toString() : "Sorry! Our systems were unable to find any batches scheduled near the delivery time.";
 	}
+	
+	public void clearKeyOnWriter(String currentRedisKey) {
+		redisCacheService.evictBatchCache(currentRedisKey);
+		
+	}
+	
+	
 }

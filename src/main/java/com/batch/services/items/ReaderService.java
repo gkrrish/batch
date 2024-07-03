@@ -26,7 +26,7 @@ public class ReaderService {
 	
 	
 	public List<SimpleCacheObject> read() throws Exception {
-		List<SimpleCacheObject> redisSimpleCachedObject=new ArrayList<SimpleCacheObject>();
+		List<SimpleCacheObject> redisScoList=new ArrayList<SimpleCacheObject>();
 		String externalRedisServiceResponse=null;
 
 		if (!batchProcessed) {
@@ -37,7 +37,7 @@ public class ReaderService {
 				externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(Long.parseLong(currentTimeBatchId));//Returns String, parse to Long
 				long batchId = Long.parseLong(externalRedisServiceResponse.replaceAll("[^\\d]", ""));//OK--gives the batchId
 
-				redisSimpleCachedObject = redisCacheService.getRedisCachedObject(batchId);
+				redisScoList = redisCacheService.getRedisCachedObject(batchId);
 				
 			} catch (NumberFormatException e) {
 				System.out.println(currentTimeBatchId);
@@ -50,7 +50,7 @@ public class ReaderService {
 			}
 
 			
-			return redisSimpleCachedObject;
+			return redisScoList;
 		}
 		return null;
 	}

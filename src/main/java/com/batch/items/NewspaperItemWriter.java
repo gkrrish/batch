@@ -5,9 +5,10 @@ import java.util.List;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 
+import com.batch.model.SimpleCacheObject;
 import com.batch.service.NewspaperService;
 
-public class NewspaperItemWriter implements ItemWriter<List<String>> {
+public class NewspaperItemWriter implements ItemWriter<List<SimpleCacheObject>> {
 	NewspaperService newspaperService;
 
 	public NewspaperItemWriter(NewspaperService newspaperService) {
@@ -15,8 +16,12 @@ public class NewspaperItemWriter implements ItemWriter<List<String>> {
 	}
 
 	@Override
-	public void write(Chunk<? extends List<String>> chunk) throws Exception {
-		 chunk.getItems().forEach(System.out::println);
+	public void write(Chunk<? extends List<SimpleCacheObject>> chunk) throws Exception {
+		String currentRedisKey = chunk.getItems().stream().findFirst().get().stream().findFirst().get().getCurrentRedisKey();
+		newspaperService.clearKeyOnWriter(currentRedisKey);
+		
+		
+		
 	}
 
 }
