@@ -1,9 +1,11 @@
 package com.batch.services.items;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -11,6 +13,8 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +30,8 @@ public class ProcessService {
     private SimpleCacheObjectRepository scoRepository;
 	@Autowired
     private EmailNotificationService emailNotificationService;
+	@Autowired
+    private ResourceLoader resourceLoader;
     private EmailModel emailModel;
 
 
@@ -33,7 +39,6 @@ public class ProcessService {
 		scoList.sort(Comparator.comparing(SimpleCacheObject::getNewsPaperfileName));
 		
 		String currentFileName = "";
-		byte[] pdfByteNewsPaper = null;
 		
 		List<SimpleCacheObject> batchList = new ArrayList<>();
 		List<SimpleCacheObject> unProcessedList=new ArrayList<>();
@@ -42,14 +47,14 @@ public class ProcessService {
 	        String fileName = sco.getNewsPaperfileName();
 	        
 	        if (!fileName.equals(currentFileName)) {
-	            pdfByteNewsPaper = fetchFile(fileName);
+	        	savePdfToResources(fileName);
 	            currentFileName = fileName;
 	        }
 	        
 	        
 	        //actually email was not there, appending here for it
 	        sco.setEmail("gkrrish.11@gmail.com");
-	        String sendEmail = sendEmail(pdfByteNewsPaper, sco.getEmail());
+	        String sendEmail = sendEmail(null, sco.getEmail());
 	        if(sendEmail.equals("Email-sent with attachment successfully")) {
 	        	batchList.add(sco);
 	        }else {
@@ -69,15 +74,44 @@ public class ProcessService {
 	}
 	
 	
-	private String sendEmail(byte[] pdfByteNewsPaper, String email) throws Exception {
+	public void savePdfToResources(String sourceFilePath) throws IOException {
+        String fileName = getFileNameFromPath(sourceFilePath);
+        
+        if (!fileName.endsWith(".pdf")) {
+            throw new IllegalArgumentException("The file name must end with .pdf");
+        }
+        
+        Path sourcePath = Paths.get(sourceFilePath.replace("file:///", ""));
+        File destinationFolder = new File("src/main/resources/currentFile");
+        
+        if (!destinationFolder.exists()) {
+            destinationFolder.mkdirs();
+        }
+        
+        Path destinationPath = Paths.get(destinationFolder.getAbsolutePath());
+        Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+    }
+    
+    private String getFileNameFromPath(String filePath) {
+        return filePath.substring(filePath.lastIndexOf('/') + 1);
+    }
+
+
+	private String sendEmail(String fileName, String email) throws Exception {
 		 emailModel = new EmailModel();
 		 emailModel.setToEmailId(email);
 		 emailModel.setEmailSubject("Notification : e-paper " + LocalDate.now());
 		 emailModel.setFromEmailId("notification@newsonwhatsapp.com");
 		 emailModel.setEmailBody("\nDear Subscriber,\nPlease find the newspaper attachment.\n\nThanks,\nNOW-Services India.");
-		 emailModel.setActualFile(pdfByteNewsPaper);
-		 CompletableFuture<String> emailSentFuture = emailNotificationService.sendMessageWithAttachment(emailModel);
-		 return emailSentFuture.get();
+		 
+		Resource resource = resourceLoader.getResource("classpath:files/Eenadu.pdf");
+		File srcFile = resource.getFile();
+		String srcPath = srcFile.getAbsolutePath();
+		
+		emailModel.setFileAddress(srcPath);
+		 
+		CompletableFuture<String> emailSentFuture = emailNotificationService.sendMessageWithAttachment(emailModel);
+		return emailSentFuture.get();
 	}
 	
 	@Transactional
@@ -90,18 +124,5 @@ public class ProcessService {
             scoRepository.flush();
         }
     }
-
-
-	private byte[] fetchFile(String fileName) {
-		byte[] fileBytes;
-		Path filePath = Paths.get(fileName);
-		try {
-			fileBytes = Files.readAllBytes(filePath);
-		} catch (IOException e) {
-			System.err.println("Error fetching file: " + fileName);
-			throw new RuntimeException("While fetching the newspaper File, we got an issue, unable to process!");
-		}
-		return fileBytes;
-	}
 
 }

@@ -10,5 +10,4 @@ public class EmailModel {
 	private String emailBody;
 	private String fileAddress;
 	private String fromEmailId;
-	private byte[] actualFile;
 }
