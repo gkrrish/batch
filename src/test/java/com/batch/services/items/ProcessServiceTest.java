@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.batch.model.SimpleCacheObject;
+import com.batch.service.RedisCacheService;
 
 @SpringBootTest
+//@Disabled
 public class ProcessServiceTest {
 
 	@Autowired
@@ -22,10 +24,12 @@ public class ProcessServiceTest {
 		SimpleCacheObject sco=new SimpleCacheObject();
 		sco.setBatchTime(7L);
 		sco.setEmail("gkrrish.11@gmail.com");
-		sco.setNewsPaperfileName("file:///C:/Users/Gaganam%20Krishna/Downloads/Eenadu-TS%2029-05.pdf");
+		sco.setNewsPaperfileName("C:\\Users\\Gaganam Krishna\\Downloads\\test-newspapers\\Eenadu_TS_04-07-2024.pdf");
 		scoList.add(sco);
 
 	}
+	@Autowired
+	RedisCacheService redisCacheService;
 
 	@Test
 	public void processTest() throws Exception {

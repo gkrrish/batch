@@ -16,7 +16,7 @@ public class RedisCacheService {
 
 	@Autowired
 	private StringRedisTemplate redisTemplate;
-
+	
 	public List<SimpleCacheObject> getRedisCachedObject(Long batchId) {
 		 List<SimpleCacheObject> simpleCacheObjects = null ;
 
@@ -54,4 +54,6 @@ public class RedisCacheService {
             redisTemplate.delete(keys);
         }
     }
+	
+	
 }
