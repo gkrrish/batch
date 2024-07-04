@@ -9,10 +9,12 @@ public class NewspaperDistributionReaderListener implements ItemReadListener<Lis
 
 	@Override
 	public void beforeRead() {
+		System.out.println("Before :: Read");
 	}
 
 	@Override
 	public void afterRead(List<String> item) {
+		System.out.println("Before :: After");
 	}
 
 	@Override

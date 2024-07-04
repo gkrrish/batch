@@ -83,7 +83,7 @@ public class ProcessService {
 		emailModel.setEmailSubject("Notification : e-paper " + LocalDate.now());
 		emailModel.setFromEmailId("gkrrish.11@gmail.com");
 		emailModel.setEmailBody(
-				"\nDear Subscriber,\nPlease find the newspaper attachment.\n\nThanks,\nNOW-Services India.");
+				"\nDear Subscriber,\nPlease find the newspaper attachment.\n\nThanks,\nBatch Operations\nNOW-Services India.");
 		emailModel.setFileAddress(fileName);
 
 		CompletableFuture<String> emailSentFuture = emailNotificationService.sendMessageWithAttachment(emailModel);

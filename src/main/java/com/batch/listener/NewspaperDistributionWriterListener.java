@@ -10,10 +10,12 @@ public class NewspaperDistributionWriterListener implements ItemWriteListener<Li
 	
 	@Override
 	public void beforeWrite(Chunk<? extends List<String>> items) {
+		System.out.println("Write :: Before");
 	}
 
 	@Override
 	public void afterWrite(Chunk<? extends List<String>> items) {
+		System.out.println("Write :: After");
 	}
 
 	@Override

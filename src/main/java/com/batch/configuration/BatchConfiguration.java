@@ -28,6 +28,7 @@ import com.batch.listener.NewspaperDistributionProcessListener;
 import com.batch.listener.NewspaperDistributionReaderListener;
 import com.batch.listener.NewspaperDistributionSkipListener;
 import com.batch.listener.NewspaperDistributionWriterListener;
+import com.batch.listener.NewspaperJobExecutionListener;
 import com.batch.model.SimpleCacheObject;
 import com.batch.service.NewspaperService;
 import com.batch.services.items.ProcessService;
@@ -92,5 +93,10 @@ public class BatchConfiguration {
     @StepScope
     public ItemWriter<List<SimpleCacheObject>> newspaperItemWriter() {
         return new NewspaperItemWriter(newspaperService);
+    }
+    
+    @Bean
+    public NewspaperJobExecutionListener newspaperJobExecutionListener() {
+        return new NewspaperJobExecutionListener(new NewspaperItemReader(readerService));
     }
 }

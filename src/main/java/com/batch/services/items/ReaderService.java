@@ -14,7 +14,7 @@ import com.batch.service.RedisCacheService;
 
 @Service
 public class ReaderService {
-	
+
 	@Autowired
 	private ExternalCacheUpdateService externalCacheUpdateService;
 	@Autowired
@@ -22,37 +22,32 @@ public class ReaderService {
 	@Autowired
 	NewspaperService newspaperService;
 
-	private boolean batchProcessed = false;
-	
-	
 	public List<SimpleCacheObject> read() throws Exception {
-		List<SimpleCacheObject> redisScoList=new ArrayList<SimpleCacheObject>();
-		String externalRedisServiceResponse=null;
+		List<SimpleCacheObject> redisScoList = new ArrayList<SimpleCacheObject>();
+		String externalRedisServiceResponse = null;
 
-		if (!batchProcessed) {
-			batchProcessed = true;
-			String currentTimeBatchId = newspaperService.getCurrentTimeBatchId();
-			
-			try {
-				externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(Long.parseLong(currentTimeBatchId));//Returns String, parse to Long
-				long batchId = Long.parseLong(externalRedisServiceResponse.replaceAll("[^\\d]", ""));//OK--gives the batchId
+		String currentTimeBatchId = newspaperService.getCurrentTimeBatchId();
 
-				redisScoList = redisCacheService.getRedisCachedObject(batchId);
-				
-			} catch (NumberFormatException e) {
-				System.out.println(currentTimeBatchId);
-				throw new RuntimeException(currentTimeBatchId);
-			}catch(ResourceAccessException resourceAccessException) {
-				System.out.println(resourceAccessException.getMessage());
-			}
-			catch (Exception e) {
-				throw new RuntimeException("Have the issue : "+e.getMessage());
+		try {
+			externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(Long.parseLong(currentTimeBatchId));// Returns String, parse to Long
+			long batchId = Long.parseLong(externalRedisServiceResponse.replaceAll("[^\\d]", ""));// OK--gives the batchId
+
+			redisScoList = redisCacheService.getRedisCachedObject(batchId);
+
+			if (redisScoList.isEmpty()) {
+				return null;
 			}
 
-			
-			return redisScoList;
+		} catch (NumberFormatException e) {
+			System.out.println(currentTimeBatchId);
+			throw new RuntimeException(currentTimeBatchId);
+		} catch (ResourceAccessException resourceAccessException) {
+			System.out.println(resourceAccessException.getMessage());
+		} catch (Exception e) {
+			throw new RuntimeException("Have the issue : " + e.getMessage());
 		}
-		return null;
+
+		return redisScoList;
 	}
 
 }

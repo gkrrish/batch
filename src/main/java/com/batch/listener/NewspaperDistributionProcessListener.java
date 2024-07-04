@@ -9,10 +9,12 @@ public class NewspaperDistributionProcessListener implements ItemProcessListener
 
 	@Override
 	public void beforeProcess(List<String> item) {
+		System.out.println("Process :: Before");
 	}
 
 	@Override
 	public void afterProcess(List<String> item, List<String> result) {
+		System.out.println("Process :: After");
 	}
 
 	@Override
