@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.batch.core.ItemReadListener;
 
-public class NewspaperDistributionReaderListener implements ItemReadListener<List<String>> {
+public class NewspaperReaderListener implements ItemReadListener<List<String>> {
 	
 
 	@Override

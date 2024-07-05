@@ -23,12 +23,11 @@ import org.springframework.transaction.PlatformTransactionManager;
 import com.batch.items.NewspaperItemProcessor;
 import com.batch.items.NewspaperItemReader;
 import com.batch.items.NewspaperItemWriter;
-import com.batch.listener.NewspaperDistributionJobStatusListener;
-import com.batch.listener.NewspaperDistributionProcessListener;
-import com.batch.listener.NewspaperDistributionReaderListener;
-import com.batch.listener.NewspaperDistributionSkipListener;
-import com.batch.listener.NewspaperDistributionWriterListener;
-import com.batch.listener.NewspaperJobExecutionListener;
+import com.batch.listener.NewspaperJobStatusListener;
+import com.batch.listener.NewspaperProcessListener;
+import com.batch.listener.NewspaperReaderListener;
+import com.batch.listener.NewspaperSkipListener;
+import com.batch.listener.NewspaperWriterListener;
 import com.batch.model.SimpleCacheObject;
 import com.batch.service.NewspaperService;
 import com.batch.services.items.ProcessService;
@@ -55,7 +54,7 @@ public class BatchConfiguration {
     public Job distributeJob(@Qualifier("distributionStep") Step distributionStep) {
         return new JobBuilder("distributeJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .listener(new NewspaperDistributionJobStatusListener())
+                .listener(new NewspaperJobStatusListener())
                 .start(distributionStep)
                 .preventRestart()
                 .build();
@@ -68,10 +67,10 @@ public class BatchConfiguration {
                 .reader(newspaperItemReader())
                 .processor(newspaperItemProcessor())
                 .writer(newspaperItemWriter())
-                .listener(new NewspaperDistributionReaderListener())
-                .listener(new NewspaperDistributionProcessListener())
-                .listener(new NewspaperDistributionWriterListener())
-                .listener(new NewspaperDistributionSkipListener())
+                .listener(new NewspaperReaderListener())
+                .listener(new NewspaperProcessListener())
+                .listener(new NewspaperWriterListener())
+                .listener(new NewspaperSkipListener())
                 .faultTolerant()
                 .skipPolicy(new AlwaysSkipItemSkipPolicy()) // Define skip policy as needed
                 .build();
@@ -95,8 +94,8 @@ public class BatchConfiguration {
         return new NewspaperItemWriter(newspaperService);
     }
     
-    @Bean
-    public NewspaperJobExecutionListener newspaperJobExecutionListener() {
-        return new NewspaperJobExecutionListener(new NewspaperItemReader(readerService));
-    }
+//    @Bean
+//    public NewspaperJobExecutionListener newspaperJobExecutionListener() {
+//        return new NewspaperJobExecutionListener(new NewspaperItemReader(readerService));
+//    }
 }

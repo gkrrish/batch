@@ -22,9 +22,16 @@ public class RedisCacheService {
 
 		Set<String> keys = redisTemplate.keys("batch:" + batchId + ":state:*:language:*");
 		
+		System.out.println("From RedisCacheService :: keys :"+keys.toString());
+		
 		if (keys != null) {
 			for (String key : keys) {
-				simpleCacheObjects = SimpleCacheObject.transform(getDataFromCache(key), key);
+				RedisCacheObject dataFromCache = getDataFromCache(key);
+				System.out.println("From RedisCacheService :: after "+dataFromCache.toString());
+				
+				simpleCacheObjects = SimpleCacheObject.transform(dataFromCache, key);
+				System.out.println("From RedisCacheService :: after Transform "+simpleCacheObjects.toString());
+				
 			}
 		}
 
@@ -34,12 +41,14 @@ public class RedisCacheService {
 
 	public RedisCacheObject getDataFromCache(String key) {
 		String data = redisTemplate.opsForValue().get(key);
+		
 		if (data != null) {
 			try {
+				System.out.println("Get Data From Cache : "+data.toString() +"for Key : "+key);
 				return new ObjectMapper().readValue(data, RedisCacheObject.class);
 
 			} catch (Exception e) {
-				e.getMessage();
+				System.err.println(" Cache is Empty or external data is Empty : key not found on Redis "+key);
 			}
 		}else if(data==null || data.isEmpty()) {
 			System.out.println(" Cache is Empty or external data is Empty : key not found on Redis "+key);
@@ -53,6 +62,7 @@ public class RedisCacheService {
         if (keys != null) {
             redisTemplate.delete(keys);
         }
+        System.out.println("Cache Evicted :: From REDIS CACHE SERVICE");
     }
 	
 	

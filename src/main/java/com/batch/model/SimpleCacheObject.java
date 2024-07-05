@@ -84,6 +84,8 @@ public class SimpleCacheObject {//this table doesn't have any constraints as of 
                 }
             }
         }
+        System.out.println("In Transformer :: ");
+        simpleCacheObjects.forEach(s -> System.out.println(s));
         return simpleCacheObjects;
     }
 }

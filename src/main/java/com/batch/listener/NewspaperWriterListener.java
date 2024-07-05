@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.item.Chunk;
 
-public class NewspaperDistributionWriterListener implements ItemWriteListener<List<String>> {
+public class NewspaperWriterListener implements ItemWriteListener<List<String>> {
 	
 	
 	@Override

@@ -1,5 +1,6 @@
 package com.batch.services.items;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,26 +24,36 @@ public class ReaderService {
 	NewspaperService newspaperService;
 
 	public List<SimpleCacheObject> read() throws Exception {
+		
+		System.out.println("From :: ReaderService :"+LocalTime.now());
+		
 		List<SimpleCacheObject> redisScoList = new ArrayList<SimpleCacheObject>();
 		String externalRedisServiceResponse = null;
 
 		String currentTimeBatchId = newspaperService.getCurrentTimeBatchId();
+		
+		System.out.println("From :: ReaderService : Current BatchId- "+currentTimeBatchId);
 
 		try {
+			System.out.println("Inside a TRY ::"+Long.parseLong(currentTimeBatchId));
 			externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(Long.parseLong(currentTimeBatchId));// Returns String, parse to Long
 			long batchId = Long.parseLong(externalRedisServiceResponse.replaceAll("[^\\d]", ""));// OK--gives the batchId
+			
+			System.out.println("From :: ReaderService : batchId Rediss Before : "+batchId);
 
 			redisScoList = redisCacheService.getRedisCachedObject(batchId);
+			System.out.println("From :: ReaderService :"+ redisScoList.toString());
 
 			if (redisScoList.isEmpty()) {
 				return null;
 			}
 
 		} catch (NumberFormatException e) {
-			System.out.println(currentTimeBatchId);
-			throw new RuntimeException(currentTimeBatchId);
+			System.out.println("Number Format Exception :: "+currentTimeBatchId);
+			return null;
 		} catch (ResourceAccessException resourceAccessException) {
 			System.out.println(resourceAccessException.getMessage());
+			return null;
 		} catch (Exception e) {
 			throw new RuntimeException("Have the issue : " + e.getMessage());
 		}

@@ -32,6 +32,8 @@ public class ProcessService {
 
 	public List<SimpleCacheObject> process(List<SimpleCacheObject> scoList) throws Exception {
 		scoList.sort(Comparator.comparing(SimpleCacheObject::getNewsPaperfileName));
+		
+		System.out.println("From ProcessService :: after sorting "+scoList.toString());
 
 		List<SimpleCacheObject> batchList = new ArrayList<>();
 		List<SimpleCacheObject> unProcessedList = new ArrayList<>();
@@ -42,12 +44,16 @@ public class ProcessService {
 
 		for (SimpleCacheObject sco : scoList) {
 			String fileName = sco.getNewsPaperfileName();
+			
+			System.out.println("From ProcessService ::  Inside ForLoop : fileName "+fileName);
 
 			if (!fileName.equals(currentFileName)) {
 				resource = resourceLoader.getResource("file:" + fileName);
 				if (resource.exists()) {
 					File srcFile = resource.getFile();
 					srcPath = srcFile.getAbsolutePath();
+					
+					System.out.println("From ProcessService ::  File Absolute Path : Resource "+srcPath);
 					currentFileName = fileName;
 				} else {
 					System.err.println("File not found: " + fileName);
@@ -55,14 +61,19 @@ public class ProcessService {
 			}
 
 			if (resource != null) {
-				sco.setEmail("gkrrish.11@gmail.com");
-				String sendEmail = sendEmail(srcPath, sco.getEmail());
+				//handle later if user receive paper today, then should not send again, need to give the what time you sent today.
+				sco.setEmail("kallemkishan204@gmail.com");
+				 sendEmail(srcPath, sco.getEmail());
+				
+				System.out.println("From ProcessService :: sendEmail :");
 
-				if (sendEmail.equals("Email-sent with attachment successfully")) {
+				/*if (sendEmail.equals("Email-sent with attachment successfully")||sco.getEmail()!=null) {//||sco.getEmail()!=null remove this condition by-passing purpose I added here
 					batchList.add(sco);
 				} else {
-					unProcessedList.add(sco);
-				}
+					unProcessedList.add(sco); //later divide this into another method
+				}*/
+				batchList.add(sco);
+				System.out.println("\n\n\n I think receiving mail is in progress I think so.\n\n\n\n");
 			} else {
 				unProcessedList.add(sco);
 			}
@@ -74,19 +85,29 @@ public class ProcessService {
 		if (!batchList.isEmpty()) {
 			batchSave(batchList);
 		}
-		return unProcessedList;
+		if(unProcessedList.isEmpty()) {
+			SimpleCacheObject sco=new SimpleCacheObject();
+			String currentRedisKey = scoList.get(0).getCurrentRedisKey();
+			sco.setCurrentRedisKey(currentRedisKey);
+			unProcessedList.add(sco);
+		}
+		
+		System.out.println("**End of the Process Service :: unProcessedList : "+unProcessedList.toString());
+		
+		return unProcessedList;//mostly here unProcessedList passing because the ItemWriter has to receive the RedisKey so that from here passing, check later thoroughly,and validate scenarios
 	}
 
 	private String sendEmail(String fileName, String email) throws Exception {
 		emailModel = new EmailModel();
 		emailModel.setToEmailId(email);
 		emailModel.setEmailSubject("Notification : e-paper " + LocalDate.now());
-		emailModel.setFromEmailId("gkrrish.11@gmail.com");
+		emailModel.setFromEmailId("kallemkishan204@gmail.com");
 		emailModel.setEmailBody(
 				"\nDear Subscriber,\nPlease find the newspaper attachment.\n\nThanks,\nBatch Operations\nNOW-Services India.");
 		emailModel.setFileAddress(fileName);
 
 		CompletableFuture<String> emailSentFuture = emailNotificationService.sendMessageWithAttachment(emailModel);
+		//future is causing the next operations. Fix this issue ASAP.
 		return emailSentFuture.get();
 	}
 
@@ -98,6 +119,8 @@ public class ProcessService {
 			List<SimpleCacheObject> batchList = simpleCacheObjectList.subList(i, end);
 			scoRepository.saveAll(batchList);
 			scoRepository.flush();
+			
+			System.out.println("BATCH SAVE : "+simpleCacheObjectList.toString());
 		}
 	}
 

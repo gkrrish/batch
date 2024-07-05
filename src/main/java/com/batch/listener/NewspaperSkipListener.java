@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.batch.core.SkipListener;
 
-public class NewspaperDistributionSkipListener implements SkipListener<List<String>, List<String>> {
+public class NewspaperSkipListener implements SkipListener<List<String>, List<String>> {
 
 	@Override
     public void onSkipInRead(Throwable t) {

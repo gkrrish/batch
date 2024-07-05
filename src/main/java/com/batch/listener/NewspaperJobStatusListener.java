@@ -3,7 +3,7 @@ package com.batch.listener;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
 
-public class NewspaperDistributionJobStatusListener implements JobExecutionListener {
+public class NewspaperJobStatusListener implements JobExecutionListener {
 
 
 	@Override

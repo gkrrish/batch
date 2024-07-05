@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.batch.core.ItemProcessListener;
 
-public class NewspaperDistributionProcessListener implements ItemProcessListener<List<String>, List<String>> {
+public class NewspaperProcessListener implements ItemProcessListener<List<String>, List<String>> {
 	
 
 	@Override

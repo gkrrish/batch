@@ -21,6 +21,14 @@ public class NewspaperItemReader implements ItemReader<List<SimpleCacheObject>> 
 		if (!readComplete) {
 			List<SimpleCacheObject> data = readerService.read();
 			readComplete = (data == null || data.isEmpty());
+			
+			if (readComplete) {
+				System.out.println("remove this later if condition :: Read operation completed or no data found.");
+			} else {
+				System.out.println("remove this later if condition :: Data read successfully: " + data);
+				reset();//or we can manage through listeners
+			}
+			
 			return data;
 		} else {
 			reset();
@@ -29,6 +37,7 @@ public class NewspaperItemReader implements ItemReader<List<SimpleCacheObject>> 
 	}
 
 	public void reset() {
+		System.out.println("Reset :: on Reader if data is null then it is going to be trigger");
 		this.readComplete = false; 
 	}
 
