@@ -24,7 +24,7 @@ public class BatchJobScheduler {
 	@Qualifier("distributeJob")
 	private Job distributeJob;
 
-	@Scheduled(cron = "0 0/5 * * * *")//every ten minutes
+	@Scheduled(cron = "0 0/3 * * * *")//every ten minutes
 	public void runProcessJob() throws Exception {
 		JobParameters jobParameters=new JobParametersBuilder()
 										.addLong("dateTime", System.currentTimeMillis())

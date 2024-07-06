@@ -1,14 +1,11 @@
 package com.batch.items;
 
-import java.util.List;
-
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
 
-import com.batch.model.SimpleCacheObject;
 import com.batch.service.NewspaperService;
 
-public class NewspaperItemWriter implements ItemWriter<List<SimpleCacheObject>> {
+public class NewspaperItemWriter implements ItemWriter<String> {
 	NewspaperService newspaperService;
 
 	public NewspaperItemWriter(NewspaperService newspaperService) {
@@ -16,12 +13,15 @@ public class NewspaperItemWriter implements ItemWriter<List<SimpleCacheObject>> 
 	}
 
 	@Override
-	public void write(Chunk<? extends List<SimpleCacheObject>> chunk) throws Exception {
-		String currentRedisKey = chunk.getItems().stream().findFirst().get().stream().findFirst().get().getCurrentRedisKey();
-		newspaperService.clearKeyOnWriter(currentRedisKey);
-		
-		
-		
+	public void write(Chunk<? extends String> chunk) throws Exception {
+		System.out.println("\n\n From WRITER service");
+        String currentRedisKey = chunk.getItems().stream()
+                                       .findFirst()
+                                       .orElseThrow(() -> new IllegalStateException("Chunk is empty"));
+                                       
+        System.out.println("From Writer Service :currentRedisKey::  " + currentRedisKey);
+        newspaperService.clearKeyOnWriter(currentRedisKey);
 	}
+
 
 }

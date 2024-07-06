@@ -30,7 +30,7 @@ public class ProcessService {
 	private EmailNotificationService emailNotificationService;
 	private EmailModel emailModel;
 
-	public List<SimpleCacheObject> process(List<SimpleCacheObject> scoList) throws Exception {
+	public String process(List<SimpleCacheObject> scoList) throws Exception {
 		scoList.sort(Comparator.comparing(SimpleCacheObject::getNewsPaperfileName));
 		
 		System.out.println("From ProcessService :: after sorting "+scoList.toString());
@@ -63,7 +63,7 @@ public class ProcessService {
 			if (resource != null) {
 				//handle later if user receive paper today, then should not send again, need to give the what time you sent today.
 				sco.setEmail("kallemkishan204@gmail.com");
-				 sendEmail(srcPath, sco.getEmail());
+				 sendEmail(srcPath, new String[] {sco.getEmail()});//make it array of senders later
 				
 				System.out.println("From ProcessService :: sendEmail :");
 
@@ -85,21 +85,25 @@ public class ProcessService {
 		if (!batchList.isEmpty()) {
 			batchSave(batchList);
 		}
+		
+		String currentRedisKey=null;
 		if(unProcessedList.isEmpty()) {
 			SimpleCacheObject sco=new SimpleCacheObject();
-			String currentRedisKey = scoList.get(0).getCurrentRedisKey();
+			currentRedisKey = scoList.get(0).getCurrentRedisKey();
 			sco.setCurrentRedisKey(currentRedisKey);
 			unProcessedList.add(sco);
 		}
 		
 		System.out.println("**End of the Process Service :: unProcessedList : "+unProcessedList.toString());
 		
-		return unProcessedList;//mostly here unProcessedList passing because the ItemWriter has to receive the RedisKey so that from here passing, check later thoroughly,and validate scenarios
+//		return unProcessedList;//mostly here unProcessedList passing because the ItemWriter has to receive the RedisKey so that from here passing, check later thoroughly,and validate scenarios
+	
+		return currentRedisKey;
 	}
 
-	private String sendEmail(String fileName, String email) throws Exception {
+	private String sendEmail(String fileName, String[] email) throws Exception {
 		emailModel = new EmailModel();
-		emailModel.setToEmailId(email);
+		emailModel.setToEmailIds(email);
 		emailModel.setEmailSubject("Notification : e-paper " + LocalDate.now());
 		emailModel.setFromEmailId("kallemkishan204@gmail.com");
 		emailModel.setEmailBody(

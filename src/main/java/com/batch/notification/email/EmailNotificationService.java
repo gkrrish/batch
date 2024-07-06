@@ -25,7 +25,7 @@ public class EmailNotificationService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setFrom(emailModel.getFromEmailId());
-        helper.setTo(emailModel.getToEmailId());
+        helper.setTo(emailModel.getToEmailIds());
         helper.setSubject(emailModel.getEmailSubject());
         helper.setText(emailModel.getEmailBody());
 

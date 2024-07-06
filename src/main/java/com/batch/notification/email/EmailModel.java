@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class EmailModel {
 	
-	private String toEmailId;
+	private String[] toEmailIds;
 	private String emailSubject;
 	private String emailBody;
 	private String fileAddress;

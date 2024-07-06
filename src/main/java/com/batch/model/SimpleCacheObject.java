@@ -16,6 +16,7 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 @Data
@@ -59,6 +60,7 @@ public class SimpleCacheObject {//this table doesn't have any constraints as of 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date creationDate;
 	
+	@Transient
 	private String currentRedisKey;
     
     public static List<SimpleCacheObject> transform(RedisCacheObject redisCacheObject, String currentRedisKey) {

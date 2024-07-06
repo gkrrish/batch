@@ -7,7 +7,7 @@ import org.springframework.batch.item.ItemProcessor;
 import com.batch.model.SimpleCacheObject;
 import com.batch.services.items.ProcessService;
 
-public class NewspaperItemProcessor implements ItemProcessor<List<SimpleCacheObject>, List<SimpleCacheObject>> {
+public class NewspaperItemProcessor implements ItemProcessor<List<SimpleCacheObject>, String> {
 	
 	ProcessService processService;
 
@@ -16,7 +16,7 @@ public class NewspaperItemProcessor implements ItemProcessor<List<SimpleCacheObj
 	}
 
 	@Override
-	public List<SimpleCacheObject> process(List<SimpleCacheObject> simpleCacheObjectList) throws Exception {
+	public String process(List<SimpleCacheObject> simpleCacheObjectList) throws Exception {
 		return processService.process(simpleCacheObjectList);
 	}//this class made for simplicity
 

@@ -38,6 +38,15 @@ public class RedisCacheService {
 		return simpleCacheObjects;
 
 	}
+	/**
+	 * 
+	 * @param batchId
+	 * @return by using this method we are minimizing the calls for external cache service.
+	 */
+	public boolean isCachePresent(Long batchId) {
+		Set<String> keys = redisTemplate.keys("batch:" + batchId + ":state:*:language:*");
+		return keys.isEmpty() ? true : false;
+	}
 
 	public RedisCacheObject getDataFromCache(String key) {
 		String data = redisTemplate.opsForValue().get(key);
@@ -62,7 +71,7 @@ public class RedisCacheService {
         if (keys != null) {
             redisTemplate.delete(keys);
         }
-        System.out.println("Cache Evicted :: From REDIS CACHE SERVICE");
+        System.out.println("Cache Evicted :: From REDIS CACHE SERVICE, I came through WRITER service ::");
     }
 	
 	

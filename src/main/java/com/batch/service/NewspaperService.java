@@ -10,7 +10,7 @@ import com.batch.service.util.MasterBatchJobRetrivingCacheService;
 @Service
 public class NewspaperService {
 
-	private final int BEFORE_TIME_IN_MINUTES = 15;
+	private final int BEFORE_TIME_IN_MINUTES = 25;
 
 	@Autowired
 	private MasterBatchJobRetrivingCacheService masterBatchJobRetrivingCacheService;

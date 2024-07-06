@@ -10,7 +10,6 @@ import org.springframework.web.client.ResourceAccessException;
 
 import com.batch.external.ExternalCacheUpdateService;
 import com.batch.model.SimpleCacheObject;
-import com.batch.service.NewspaperService;
 import com.batch.service.RedisCacheService;
 
 @Service
@@ -20,23 +19,23 @@ public class ReaderService {
 	private ExternalCacheUpdateService externalCacheUpdateService;
 	@Autowired
 	private RedisCacheService redisCacheService;
-	@Autowired
-	NewspaperService newspaperService;
+	
 
-	public List<SimpleCacheObject> read() throws Exception {
-		
-		System.out.println("From :: ReaderService :"+LocalTime.now());
+	public List<SimpleCacheObject> read(Long currentTimeBatchId) throws Exception {
 		
 		List<SimpleCacheObject> redisScoList = new ArrayList<SimpleCacheObject>();
 		String externalRedisServiceResponse = null;
 
-		String currentTimeBatchId = newspaperService.getCurrentTimeBatchId();
-		
-		System.out.println("From :: ReaderService : Current BatchId- "+currentTimeBatchId);
-
 		try {
-			System.out.println("Inside a TRY ::"+Long.parseLong(currentTimeBatchId));
-			externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(Long.parseLong(currentTimeBatchId));// Returns String, parse to Long
+			
+			if(redisCacheService.isCachePresent(currentTimeBatchId)) {
+				externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(currentTimeBatchId);// Returns String, parse to Long
+			}
+			
+			if(externalRedisServiceResponse.equals("Failed to update cache for batchId:")) {
+				System.out.println("Debug : there is not Active users nor Today newspapers present.");
+				return null;
+			}
 			long batchId = Long.parseLong(externalRedisServiceResponse.replaceAll("[^\\d]", ""));// OK--gives the batchId
 			
 			System.out.println("From :: ReaderService : batchId Rediss Before : "+batchId);

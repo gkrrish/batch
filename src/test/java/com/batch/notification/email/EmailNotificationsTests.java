@@ -40,7 +40,7 @@ public class EmailNotificationsTests {
 
         emailModel = new EmailModel();
         emailModel.setFromEmailId("gkrrish.11@gmail.com");
-        emailModel.setToEmailId("gkrrish.11@gmail.com");
+        emailModel.setToEmailIds(new String[]{"gkrrish.11@gmail.com"});
         emailModel.setEmailSubject("Notification : e-paper " + LocalDate.now());
         emailModel.setEmailBody("***\n TEST CASE \n ****\nDear Subscriber,\nPlease find the newspaper attachment.\n\nThanks,\nNOW-Services India.");
         emailModel.setFileAddress(srcPath);

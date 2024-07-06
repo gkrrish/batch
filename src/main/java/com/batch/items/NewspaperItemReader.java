@@ -2,15 +2,21 @@ package com.batch.items;
 
 import java.util.List;
 
+import org.springframework.batch.core.StepExecution;
+import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemReader;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.batch.model.SimpleCacheObject;
+import com.batch.service.NewspaperService;
 import com.batch.services.items.ReaderService;
 
 public class NewspaperItemReader implements ItemReader<List<SimpleCacheObject>> {
 
 	ReaderService readerService;
-	private boolean readComplete = false;
+	private boolean isDataNotRead = true;
+	@Autowired
+	NewspaperService newspaperService;
 
 	public NewspaperItemReader(ReaderService readerService) {
 		this.readerService = readerService;
@@ -18,27 +24,25 @@ public class NewspaperItemReader implements ItemReader<List<SimpleCacheObject>> 
 
 	@Override
 	public List<SimpleCacheObject> read() throws Exception {
-		if (!readComplete) {
-			List<SimpleCacheObject> data = readerService.read();
-			readComplete = (data == null || data.isEmpty());
-			
-			if (readComplete) {
-				System.out.println("remove this later if condition :: Read operation completed or no data found.");
-			} else {
-				System.out.println("remove this later if condition :: Data read successfully: " + data);
-				reset();//or we can manage through listeners
+		if (isDataNotRead) {
+			String currentTimeBatchId = newspaperService.getCurrentTimeBatchId();
+			long batchId = 0;
+			List<SimpleCacheObject> data = null;
+			try {
+				batchId = Long.parseLong(currentTimeBatchId);
+				data = readerService.read(batchId);
+
+			} catch (NumberFormatException e) {
+				System.out.println("Number Format Exception :: " + currentTimeBatchId);
+				return null;
 			}
-			
+
+			isDataNotRead = data.isEmpty() || data == null ? true : false;
+
 			return data;
+
 		} else {
-			reset();
-			return null; 
+			return null;
 		}
 	}
-
-	public void reset() {
-		System.out.println("Reset :: on Reader if data is null then it is going to be trigger");
-		this.readComplete = false; 
-	}
-
 }
