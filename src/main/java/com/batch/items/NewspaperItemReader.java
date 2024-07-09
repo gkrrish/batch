@@ -2,8 +2,6 @@ package com.batch.items;
 
 import java.util.List;
 
-import org.springframework.batch.core.StepExecution;
-import org.springframework.batch.core.annotation.BeforeStep;
 import org.springframework.batch.item.ItemReader;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -15,6 +13,7 @@ public class NewspaperItemReader implements ItemReader<List<SimpleCacheObject>> 
 
 	ReaderService readerService;
 	private boolean isDataNotRead = true;
+	int i=0;
 	@Autowired
 	NewspaperService newspaperService;
 
@@ -23,26 +22,30 @@ public class NewspaperItemReader implements ItemReader<List<SimpleCacheObject>> 
 	}
 
 	@Override
-	public List<SimpleCacheObject> read() throws Exception {
+	public List<SimpleCacheObject> read() throws Exception {//by hard coding fixing the issue later re-factor this entire thing.
+		List<SimpleCacheObject> rList=null;
 		if (isDataNotRead) {
 			String currentTimeBatchId = newspaperService.getCurrentTimeBatchId();
-			long batchId = 0;
+			
+			System.out.println("************/n isDataNotRead- "+isDataNotRead+" -currentTimeBatchId :"+currentTimeBatchId+" -Loop :"+i+++" \n\n**************");
+			
 			List<SimpleCacheObject> data = null;
 			try {
-				batchId = Long.parseLong(currentTimeBatchId);
+				long batchId = Long.parseLong(currentTimeBatchId);
 				data = readerService.read(batchId);
 
 			} catch (NumberFormatException e) {
 				System.out.println("Number Format Exception :: " + currentTimeBatchId);
-				return null;
+				return rList;
+			}catch (Exception e) {
+				return rList;
 			}
 
-			isDataNotRead = data.isEmpty() || data == null ? true : false;
+			isDataNotRead = (data.isEmpty() || data == null) ? true : false;
+			System.out.println("isDataNotRead "+isDataNotRead);
 
 			return data;
 
-		} else {
-			return null;
-		}
+		} return rList;
 	}
 }

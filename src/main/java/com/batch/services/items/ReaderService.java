@@ -1,6 +1,5 @@
 package com.batch.services.items;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class ReaderService {
 
 	public List<SimpleCacheObject> read(Long currentTimeBatchId) throws Exception {
 		
-		List<SimpleCacheObject> redisScoList = new ArrayList<SimpleCacheObject>();
+		List<SimpleCacheObject> redisScoList = null;
 		String externalRedisServiceResponse = null;
 
 		try {

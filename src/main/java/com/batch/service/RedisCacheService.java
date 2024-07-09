@@ -24,6 +24,10 @@ public class RedisCacheService {
 		
 		System.out.println("From RedisCacheService :: keys :"+keys.toString());
 		
+		if(keys.isEmpty()) {
+			return null;
+		}
+		
 		if (keys != null) {
 			for (String key : keys) {
 				RedisCacheObject dataFromCache = getDataFromCache(key);
@@ -45,7 +49,7 @@ public class RedisCacheService {
 	 */
 	public boolean isCachePresent(Long batchId) {
 		Set<String> keys = redisTemplate.keys("batch:" + batchId + ":state:*:language:*");
-		return keys.isEmpty() ? true : false;
+		return (keys.isEmpty()|| keys.size()==0) ? true : false;
 	}
 
 	public RedisCacheObject getDataFromCache(String key) {

@@ -15,10 +15,7 @@ public class NewspaperItemWriter implements ItemWriter<String> {
 	@Override
 	public void write(Chunk<? extends String> chunk) throws Exception {
 		System.out.println("\n\n From WRITER service");
-        String currentRedisKey = chunk.getItems().stream()
-                                       .findFirst()
-                                       .orElseThrow(() -> new IllegalStateException("Chunk is empty"));
-                                       
+        String currentRedisKey = chunk.getItems().get(0).toString();
         System.out.println("From Writer Service :currentRedisKey::  " + currentRedisKey);
         newspaperService.clearKeyOnWriter(currentRedisKey);
 	}
