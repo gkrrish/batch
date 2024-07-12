@@ -41,8 +41,7 @@ public class BatchJobScheduler {
 	@Scheduled(cron = "0 0/4 * * * *")
 	public void preventReaderRepetative() {
 		log.info("Updated the prevent Reader repeatative flag earlier: {} and now made to False", BatchUTIL.flag);
-		BatchUTIL.flag=false;
-		
+		BatchUTIL.setFlag(false);
 	}
     
 }

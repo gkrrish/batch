@@ -35,7 +35,7 @@ public class ReaderService {
 	 */
 	public List<SimpleCacheObject> read() {
 		
-		if(BatchUTIL.flag==false) {
+		if(BatchUTIL.getFlag()==false) {
 			String currentTimeBatchId = getCurrentBatchId();
 			
 			Long batchId = Long.parseLong(currentTimeBatchId);

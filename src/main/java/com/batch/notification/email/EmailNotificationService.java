@@ -27,12 +27,10 @@ public class EmailNotificationService {
         helper.setFrom(emailModel.getFromEmailId());
         helper.setTo(emailModel.getToEmailIds());
         helper.setSubject(emailModel.getEmailSubject());
-        helper.setText(emailModel.getEmailBody());
+        helper.setText(emailModel.getEmailBody(),true);
 
         FileSystemResource file = new FileSystemResource(new File(emailModel.getFileAddress()));
         helper.addAttachment(file.getFilename(), file);
-        
-        System.out.println("From Email : "+emailModel.toString());
         
         mailSender.send(message);
 

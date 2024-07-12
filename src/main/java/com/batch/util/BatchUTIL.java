@@ -1,10 +1,19 @@
 package com.batch.util;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 public class BatchUTIL {
 
-	public static boolean flag = false;
-	
-	
+	public static AtomicBoolean flag = new AtomicBoolean(false);
+
+	public static boolean getFlag() {
+		return flag.get();
+	}
+
+	public static void setFlag(boolean value) {
+		flag.set(value);
+	}
+
 	public final static String FROM_EMAIL_ID = "kallemkishan204@gmail.com";
 
 	public static String getMailBody() {

@@ -20,7 +20,7 @@ public class NewspaperItemWriter implements ItemWriter<String> {
 		try {
 			currentRedisKey = chunk.getItems().get(0).toString();
 			newspaperService.clearKeyOnWriter(currentRedisKey);
-			BatchUTIL.flag=true;
+			BatchUTIL.setFlag(true);
 		} catch (Exception e) {
 			throw new RedisCacheNotClearedException("Not cleared the Redis Cache for Key : " + currentRedisKey);
 		}

@@ -93,7 +93,6 @@ public class RedisCacheService {
 		if (keys != null) {
 			redisTemplate.delete(keys);
 		}
-		System.out.println("Cache Evicted :: From REDIS CACHE SERVICE, I came through WRITER service ::");
 	}
 
 }
