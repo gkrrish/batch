@@ -19,7 +19,7 @@ public class EmailNotificationService {
 	@Autowired
 	private JavaMailSender mailSender;
 
-	@Async//handle Async later because the response is not receiving the Item Processor in-time so that it was unable to initiate the ItemWriter as of now bypassing this
+	@Async
     public CompletableFuture<String> sendMessageWithAttachment(EmailModel emailModel) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);

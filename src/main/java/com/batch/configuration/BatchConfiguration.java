@@ -93,9 +93,4 @@ public class BatchConfiguration {
     public ItemWriter<? super String> newspaperItemWriter() {
         return new NewspaperItemWriter(newspaperService);
     }
-    
-//    @Bean
-//    public NewspaperJobExecutionListener newspaperJobExecutionListener() {
-//        return new NewspaperJobExecutionListener(new NewspaperItemReader(readerService));
-//    }
 }

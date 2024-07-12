@@ -1,62 +1,86 @@
 package com.batch.services.items;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.ResourceAccessException;
 
+import com.batch.exception.CurrentBatchIdNotAvailableException;
+import com.batch.exception.ExternalCacheException;
 import com.batch.external.ExternalCacheUpdateService;
+import com.batch.items.NewspaperItemReader;
 import com.batch.model.SimpleCacheObject;
+import com.batch.service.NewspaperService;
 import com.batch.service.RedisCacheService;
+import com.batch.util.BatchUTIL;
 
 @Service
 public class ReaderService {
+
+	private static final Logger logger = LoggerFactory.getLogger(NewspaperItemReader.class);
 
 	@Autowired
 	private ExternalCacheUpdateService externalCacheUpdateService;
 	@Autowired
 	private RedisCacheService redisCacheService;
-	
+	@Autowired
+	private NewspaperService newspaperService;
 
-	public List<SimpleCacheObject> read(Long currentTimeBatchId) throws Exception {
+	/**
+	 * This method mainly meant for reading the data from the Redis and keeps in simple Cache Object
+	 * 
+	 * @return
+	 */
+	public List<SimpleCacheObject> read() {
 		
-		List<SimpleCacheObject> redisScoList = null;
-		String externalRedisServiceResponse = null;
-
-		try {
+		if(BatchUTIL.flag==false) {
+			String currentTimeBatchId = getCurrentBatchId();
 			
-			if(redisCacheService.isCachePresent(currentTimeBatchId)) {
-				externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(currentTimeBatchId);// Returns String, parse to Long
-			}
+			Long batchId = Long.parseLong(currentTimeBatchId);
+
+			batchId = getUpdatedRedisCacheKey(batchId);
+
+			List<SimpleCacheObject> simpleCacheObjectList = redisCacheService.getRedisCachedObject(batchId);
+
+			return simpleCacheObjectList.isEmpty() ? null : simpleCacheObjectList;
 			
-			if(externalRedisServiceResponse.equals("Failed to update cache for batchId:")) {
-				System.out.println("Debug : there is not Active users nor Today newspapers present.");
-				return null;
-			}
-			long batchId = Long.parseLong(externalRedisServiceResponse.replaceAll("[^\\d]", ""));// OK--gives the batchId
-			
-			System.out.println("From :: ReaderService : batchId Rediss Before : "+batchId);
-
-			redisScoList = redisCacheService.getRedisCachedObject(batchId);
-			System.out.println("From :: ReaderService :"+ redisScoList.toString());
-
-			if (redisScoList.isEmpty()) {
-				return null;
-			}
-
-		} catch (NumberFormatException e) {
-			System.out.println("Number Format Exception :: "+currentTimeBatchId);
+		}else {
 			return null;
-		} catch (ResourceAccessException resourceAccessException) {
-			System.out.println(resourceAccessException.getMessage());
-			return null;
-		} catch (Exception e) {
-			throw new RuntimeException("Have the issue : " + e.getMessage());
 		}
+	}
 
-		return redisScoList;
+	/**
+	 * 
+	 * @return get the current time's batch Id
+	 */
+	public String getCurrentBatchId() {
+		String currentTimeBatchId = newspaperService.getCurrentTimeBatchId();
+
+		if (currentTimeBatchId.isEmpty() || currentTimeBatchId.startsWith("Failed")) {
+			logger.error("Error retrieving current time batch ID: {}", currentTimeBatchId);
+			throw new CurrentBatchIdNotAvailableException(currentTimeBatchId);
+		}
+		return currentTimeBatchId;
+	}
+
+	/**
+	 * 
+	 * @param batchId
+	 * @return get the Current Batch of the Redis cache, if cache is not there means we are going to create the cache
+	 */
+	public Long getUpdatedRedisCacheKey(Long batchId) {
+		if (redisCacheService.isNotPresentCacheInRedis(batchId)) {
+			String externalRedisServiceResponse = externalCacheUpdateService.updateCacheByBatchId(batchId);
+
+			if (externalRedisServiceResponse.isEmpty() || externalRedisServiceResponse.startsWith("Failed")) {
+				logger.error("Error retrieving external cache from Redis ID: {}", externalRedisServiceResponse);
+				throw new ExternalCacheException(externalRedisServiceResponse);
+			}
+			batchId = Long.parseLong(externalRedisServiceResponse.replaceAll("[^\\d]", ""));
+		}
+		return batchId;
 	}
 
 }

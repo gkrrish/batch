@@ -62,11 +62,15 @@ public class SimpleCacheObject {//this table doesn't have any constraints as of 
 	
 	@Transient
 	private String currentRedisKey;
+	
+	@Transient//add db column and remove transient
+	private String isProcessed;
     
     public static List<SimpleCacheObject> transform(RedisCacheObject redisCacheObject, String currentRedisKey) {
         List<SimpleCacheObject> simpleCacheObjects = new ArrayList<>();
 
         for (UserInfo user : redisCacheObject.getUsers()) {
+        	//minimize-do NOT transform which are really not needed fields to reduce the network traffic
             for (NewspaperInfo newspaper : redisCacheObject.getNewspapers()) {
                 if (newspaper.getAssociateNewspaperIds().contains(user.getNewspaperId())) {
                     SimpleCacheObject simpleCacheObject = new SimpleCacheObject();
@@ -81,13 +85,12 @@ public class SimpleCacheObject {//this table doesn't have any constraints as of 
                     simpleCacheObject.setNewsPaperfileName(newspaper.getNewsPaperfileName());
                     
                     simpleCacheObject.setCurrentRedisKey(currentRedisKey);
+                    simpleCacheObject.setIsProcessed("N");
 
                     simpleCacheObjects.add(simpleCacheObject);
                 }
             }
         }
-        System.out.println("In Transformer :: ");
-        simpleCacheObjects.forEach(s -> System.out.println(s));
         return simpleCacheObjects;
     }
 }
