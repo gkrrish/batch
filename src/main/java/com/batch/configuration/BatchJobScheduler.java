@@ -26,7 +26,7 @@ public class BatchJobScheduler {
 	@Qualifier("distributeJob")
 	private Job distributeJob;
 
-	@Scheduled(cron = "0 0/5 * * * *")//every thirty minutes
+	@Scheduled(cron = "30 28,58 * * * *") // Every hour 28:30 and 58:30 
 	public void runProcessJob() throws Exception {
 		JobParameters jobParameters=new JobParametersBuilder()
 										.addLong("dateTime", System.currentTimeMillis())
@@ -36,9 +36,9 @@ public class BatchJobScheduler {
 	}
 	
 	/**
-	 * This is always a minute lesser than runProcessJob
+	 * This is always a 30 seconds lesser than runProcessJob
 	 */
-	@Scheduled(cron = "0 0/4 * * * *")
+	@Scheduled(cron = "0 28,58 * * * *") // Every hour 28:00 and 58:00
 	public void preventReaderRepetative() {
 		log.info("Updated the prevent Reader repeatative flag earlier: {} and now made to False", BatchUTIL.flag);
 		BatchUTIL.setFlag(false);

@@ -18,25 +18,28 @@ public class BatchUTIL {
 
 	public static String getMailBody() {
 		String emailBody = """
-				Dear Subscriber,
-				Please find the newspaper attachment.
-				""";
-		emailBody += getEmailHtmlContent();
+				   <p>Dear Subscriber,</p>
+				   <p>Please find the newspaper attachment.</p>
+				   <p>Thanks,<br>
+				   Batch Operations<br>
+				   NOW-Services India.</p>
 
-		emailBody += """
-				Thanks,<br>Batch Operations<br>NOW-Services India.
-				""";
+					<p style="font-size:3px; font-style:italic; font-weight:bold;">
+				      "This is a Testing email from NOW. For testing purposes, copyrighted content is used under the fair use policy (17 U.S.C. § 107)."
+					</p>
+				   """;
+
+		emailBody += getEmailHtmlContent();
 		return emailBody;
 	}
 
 	private static String getEmailHtmlContent() {
 		return """
-					    		<!DOCTYPE html>
+				<!DOCTYPE html>
 				<html lang="en">
 				<head>
 				    <meta charset="UTF-8">
 				    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-				    <title>Large Banner</title>
 				    <style>
 				        body {
 				            font-family: Arial, sans-serif;
@@ -44,48 +47,26 @@ public class BatchUTIL {
 				            padding: 0;
 				        }
 				        .banner {
-				            background-color: #4CAF50;
+				            background-color: #2da5c8;
 				            color: white;
-				            text-align: center;
-				            padding: 3px; /* Increased padding */
-				            border-radius: 3px;
-				            margin: 5px; /* Increased margin */
-				            max-width: 550px; /* Increased max-width */
-				            margin: auto;
-				        }
-				        .banner h1 {
-				            margin: 0;
-				            font-size: 1.0em; /* Increased font size */
+				            text-align: left;
+				            padding: 12px;
+				            border-radius: 2px;
+				            display: inline-block;
 				        }
 				        .banner p {
-				            margin: 3px 0 5px;
-				            font-size: 1.0em; /* Increased font size */
-				        }
-				        .banner a {
-				            background-color: white;
-				            color: #4CAF50;
-				            padding: 5px 10px; /* Increased padding */
-				            text-decoration: none;
-				            border-radius: 3px;
-				            font-size: 1.0em; /* Increased font size */
-				            transition: background-color 0.3s, color 0.3s;
-				        }
-				        .banner a:hover {
-				            background-color: #45a049;
-				            color: white;
+				            margin: 0;
+				            font-size: 0.8em;
 				        }
 				    </style>
 				</head>
 				<body>
 				    <div class="banner">
-				        <h2>ప్రతి ఉషోదయానా ఒక కొత్త సమాచార వేదిక !</h2>
-				        <p>మేము మీతోనే, ప్రతి న్యూస్ పేపర్ మీ చేతులో ....</p>
-
+				        <p>ప్రతి ఉషోదయానా ఒక కొత్త సమాచార వేదిక! &nbsp; మేము మీతోనే, ప్రతి న్యూస్ పేపర్ మీ చేతులో....</p>
 				    </div>
 				</body>
 				</html>
-
-					    		""";
+				""";
 	}
 
 }

@@ -34,19 +34,25 @@ public class ReaderService {
 	 * @return
 	 */
 	public List<SimpleCacheObject> read() {
-		
-		if(BatchUTIL.getFlag()==false) {
-			String currentTimeBatchId = getCurrentBatchId();
+		return BatchUTIL.getFlag() ? null : readOperation();
+	}
+
+	/**
+	 * This method will be do a complete Read operations, so separated the method for more readable and maintainable
+	 * Here catch-ed the thrown exceptions entire read operations
+	 * @return
+	 */
+	private List<SimpleCacheObject> readOperation() {
+		try {
 			
+			String currentTimeBatchId = getCurrentBatchId();
 			Long batchId = Long.parseLong(currentTimeBatchId);
-
 			batchId = getUpdatedRedisCacheKey(batchId);
-
 			List<SimpleCacheObject> simpleCacheObjectList = redisCacheService.getRedisCachedObject(batchId);
-
 			return simpleCacheObjectList.isEmpty() ? null : simpleCacheObjectList;
 			
-		}else {
+		}catch (Exception e) {
+			logger.error("Read Operation got terminated Due to the given reason "+e.getMessage());
 			return null;
 		}
 	}
