@@ -32,9 +32,7 @@ public class RedisCacheService {
 	public List<SimpleCacheObject> getRedisCachedObject(@NonNull Long batchId) {//think about while saving the object into Redis, another Data structure? check in cache project
 		Set<String> keys = redisTemplate.keys("batch:" + batchId + ":state:*:language:*");
 
-		if (keys == null || keys.isEmpty()) {
-			return null;
-		}
+		if (keys == null || keys.isEmpty()) return null;
 
 		List<SimpleCacheObject> simpleCacheObjects = new ArrayList<>();
 

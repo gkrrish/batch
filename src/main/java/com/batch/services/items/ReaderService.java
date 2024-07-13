@@ -38,7 +38,7 @@ public class ReaderService {
 	}
 
 	/**
-	 * This method will be do a complete Read operations, so separated the method for more readable and maintainable
+	 * This method will do a complete Read operations, so separated a method for more readable and maintainable.
 	 * Here catch-ed the thrown exceptions entire read operations
 	 * @return
 	 */

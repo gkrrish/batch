@@ -1,41 +1,75 @@
 package com.batch.services.items;
 
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import com.batch.model.SimpleCacheObject;
-import com.batch.service.RedisCacheService;
+import com.batch.notification.email.EmailNotificationService;
+import com.batch.repository.SimpleCacheObjectRepository;
 
-@SpringBootTest
-@Disabled
+@ExtendWith(MockitoExtension.class)
 public class ProcessServiceTest {
 
-	@Autowired
-	ProcessService processService;
-	static List<SimpleCacheObject> scoList = new ArrayList<>();
+    @Mock
+    private ResourceLoader resourceLoader;
 
-	@BeforeAll
-	public static void setUp() {
-		SimpleCacheObject sco=new SimpleCacheObject();
-		sco.setBatchTime(7L);
-		sco.setEmail("gkrrish.11@gmail.com");
-		sco.setNewsPaperfileName("C:\\Users\\Gaganam Krishna\\Downloads\\test-newspapers\\Eenadu_TS_04-07-2024.pdf");
-		scoList.add(sco);
+    @Mock
+    private SimpleCacheObjectRepository scoRepository;
 
-	}
-	@Autowired
-	RedisCacheService redisCacheService;
+    @Mock
+    private EmailNotificationService emailNotificationService;
 
-	@Test
-	public void processTest() throws Exception {
-		processService.process(scoList);
+    @InjectMocks
+    private ProcessService processService;
 
-	}
+    private static List<SimpleCacheObject> scoList;
+    
+    private static final String filePath="C:\\Users\\Gaganam Krishna\\Downloads\\test-newspapers\\Eenadu_TS_04-07-2024.pdf";
 
+    @BeforeAll
+    public static void setUp() {
+        scoList = new ArrayList<>();
+        SimpleCacheObject sco = new SimpleCacheObject();
+        sco.setBatchTime(7L);
+        sco.setEmail("kallemkishan204@gmail.com");
+        sco.setNewsPaperfileName(filePath);
+        scoList.add(sco);
+    }
+
+    @Test
+    public void processTest() throws Exception {
+    	when(emailNotificationService.sendMessageWithAttachment(any())).thenReturn(CompletableFuture.completedFuture("Email-sent with attachment successfully"));
+        
+        Resource resourceMock = mock(Resource.class);
+        when(resourceMock.exists()).thenReturn(true);
+        when(resourceMock.getFile()).thenReturn(new File(filePath));
+        when(resourceLoader.getResource(anyString())).thenReturn(resourceMock);
+
+        String process = processService.process(scoList);
+
+        verify(emailNotificationService, times(1)).sendMessageWithAttachment(any());
+        verify(scoRepository, times(1)).saveAll(any());
+        verify(scoRepository, times(1)).flush();
+
+        assertNull(process);
+    }
 }

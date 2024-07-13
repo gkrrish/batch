@@ -18,13 +18,15 @@ public class BatchUTIL {
 
 	public static String getMailBody() {
 		String emailBody = """
-				   <p>Dear Subscriber,</p>
-				   <p>Please find the newspaper attachment.</p>
+				   <p>Dear Subscriber,</p><p></p>
+				   <P>Please find the newspaper attachment.</p>
+				   
+				   <p></p><p></p>
 				   <p>Thanks,<br>
 				   Batch Operations<br>
 				   NOW-Services India.</p>
 
-					<p style="font-size:3px; font-style:italic; font-weight:bold;">
+					<p style="font-size:10px; font-style:italic;">
 				      "This is a Testing email from NOW. For testing purposes, copyrighted content is used under the fair use policy (17 U.S.C. § 107)."
 					</p>
 				   """;
