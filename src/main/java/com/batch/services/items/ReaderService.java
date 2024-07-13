@@ -41,8 +41,9 @@ public class ReaderService {
 	 * This method will do a complete Read operations, so separated a method for more readable and maintainable.
 	 * Here catch-ed the thrown exceptions entire read operations
 	 * @return
+	 * Protected modifier kept for Test case purpose check later for alter ways
 	 */
-	private List<SimpleCacheObject> readOperation() {
+	protected List<SimpleCacheObject> readOperation() {
 		try {
 			
 			String currentTimeBatchId = getCurrentBatchId();

@@ -93,4 +93,9 @@ public class SimpleCacheObject {//this table doesn't have any constraints as of 
         }
         return simpleCacheObjects;
     }
+
+    //test case purpose written validate later
+	public String getData() {
+		return "some data";
+	}
 }

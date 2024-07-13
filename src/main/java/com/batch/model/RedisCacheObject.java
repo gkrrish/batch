@@ -69,4 +69,10 @@ public class RedisCacheObject {
 		private List<Long> associateNewspaperIds;
 
 	}
+
+	//test case purpose written validate later
+	private String data;
+	public RedisCacheObject(String data) {
+        this.data = data;
+    }
 }
