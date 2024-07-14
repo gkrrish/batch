@@ -51,7 +51,7 @@ public class EmailNotificationService {
         helper.setFrom(emailModel.getFromEmailId());
         helper.setTo(emailModel.getToEmailIds());
         helper.setSubject(emailModel.getEmailSubject());
-        helper.setText(emailModel.getEmailBody(), true);
+        helper.setText(emailModel.getEmailBody());//not HTML
 
         // Attach the PDF byte array
         ByteArrayResource byteArrayResource = new ByteArrayResource(emailModel.getAttachment());

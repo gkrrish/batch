@@ -38,7 +38,7 @@ public class MonthlyInvoiceService {
     @Autowired
     private RestTemplate restTemplate;
 
-    public void sendInvoiceReportByPagination() throws IOException, MessagingException {
+    public String sendInvoiceReportByPagination() throws IOException, MessagingException {
 
         int batchSize = 100;
         long totalRecords = userDetailsRepository.count();
@@ -57,6 +57,8 @@ public class MonthlyInvoiceService {
 
             logger.info("Invoice schedular sends reports from row: {} to row: {}", startRow, endRow);
         }
+        
+        return "Successfully Sent Invoice PDF file to Subscribers";
     }
 
     public void sendInvoiceCopy(List<UserDetails> userDetailsList) throws IOException, MessagingException {
@@ -88,15 +90,23 @@ public class MonthlyInvoiceService {
     }
 
     private void sendEmailWithAttachment(byte[] pdfBytes, String attachmentFilename) throws MessagingException {
-    	String previousMonthYear = LocalDate.now().minusMonths(1).getMonthValue() + "-" + LocalDate.now().minusMonths(1).getYear();
+    	String previousMonthYear = LocalDate.now().minusMonths(1).getMonth().toString() + "-" + LocalDate.now().minusMonths(1).getYear();
 
     	EmailModelWithByteData emailModel = new EmailModelWithByteData();
         emailModel.setFromEmailId("kallemkishan204@gmail.com"); 
         emailModel.setToEmailIds(new String[]{"kallemkishan204@gmail.com"});
         emailModel.setEmailSubject("Invoice : "+previousMonthYear);
         
-        emailModel.setEmailBody("Dear Subscriber, \n Thanks for being with us, please find the below attachment for Invoice report \n\n"
-        		+ "Thanks\n Batch-Operations \n Invoice Department \n Now-Services India.");
+        String emailBody = "Dear Subscriber,\n\n" +
+                "Thank you for being with us. Please find the attached invoice report.\n\n" +
+                "Thanks,\n" +
+                "Batch Operations\n" +
+                "Invoice Department\n" +
+                "Now-Services India"+
+                "\n\n\n"
+                +"మీ ఆనందాలతో వేడుక చేసుకుందాం, మీ స్నేహితులకు మా గురించి చెప్పండి. షేర్ చేయండి. "; //this should be done through localization
+        
+        emailModel.setEmailBody(emailBody);
         emailModel.setAttachment(pdfBytes);
         emailModel.setAttachmentFilename(attachmentFilename);
 

@@ -19,7 +19,8 @@ public class MonthlyInvoiceSchedular {
 	@Scheduled(cron = "0 0 15 1 * *") // runs every month 1st and at 3pm
 	public void preventReaderRepetative() {
 		try {
-			monthlyInvoiceService.sendInvoiceReportByPagination();
+			String sendInvoiceReportByPagination = monthlyInvoiceService.sendInvoiceReportByPagination();
+			logger.info(sendInvoiceReportByPagination);
 		} catch (Exception e) {
 			logger.error("Got failed Invoice Schedular: " + e.getMessage());
 		}
