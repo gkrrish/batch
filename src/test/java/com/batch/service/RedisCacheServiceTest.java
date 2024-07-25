@@ -115,7 +115,8 @@ class RedisCacheServiceTest {
         String key = "batch:123:state:1:language:en";
         RedisCacheObject cacheObject = new RedisCacheObject("some data");
 
-        ValueOperations<String, String> valueOps = mock(ValueOperations.class);
+        @SuppressWarnings("unchecked")
+		ValueOperations<String, String> valueOps = mock(ValueOperations.class);
         when(redisTemplate.opsForValue()).thenReturn(valueOps);
         when(valueOps.get(key)).thenReturn(new ObjectMapper().writeValueAsString(cacheObject));
 
@@ -129,7 +130,8 @@ class RedisCacheServiceTest {
     void testGetDataFromCache_Negative() {
         String key = "batch:123:state:1:language:en";
 
-        ValueOperations<String, String> valueOps = mock(ValueOperations.class);
+        @SuppressWarnings("unchecked")
+		ValueOperations<String, String> valueOps = mock(ValueOperations.class);
         when(redisTemplate.opsForValue()).thenReturn(valueOps);
         when(valueOps.get(key)).thenReturn(null);
 

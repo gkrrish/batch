@@ -124,7 +124,8 @@ public class ProcessService {
 	 public void resendFailedEmails() {
 	        List<SimpleCacheObject> failedEmails = null;//scoRepository.findByIsProcessed("N");
 
-	        List<SimpleCacheObject> emailsToResend = failedEmails.stream()
+	        @SuppressWarnings("null")
+			List<SimpleCacheObject> emailsToResend = failedEmails.stream()
 	        													  .filter(email -> !email.getIsProcessed().equals("Y"))
 	        													  .collect(Collectors.toList());
 
