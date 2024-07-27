@@ -73,7 +73,7 @@ public class MonthlyInvoiceService {
 
     public void welcomeUser(WelcomeRequest request) throws IOException, MessagingException {
 
-        String url = "http://localhost:8383/welcome";
+        String url = "http://localhost:9009/welcome";
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 

@@ -10,7 +10,7 @@ public class ExternalCacheUpdateService {
     @Autowired
     private RestTemplate restTemplate;
 
-    private final String baseUrl = "http://localhost:8384/cache";
+    private final String baseUrl = "http://localhost:9002/cache";
 
     public String updateCache() {
         String url = baseUrl + "/update";

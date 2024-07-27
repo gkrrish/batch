@@ -33,7 +33,7 @@ class ExternalCacheUpdateServiceTest {
     @Test
     void testUpdateCache_Positive() {
         String expectedResponse = "Cache updated successfully";
-        mockServer.expect(requestTo("http://localhost:8384/cache/update"))
+        mockServer.expect(requestTo("http://localhost:9002/cache/update"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(expectedResponse, org.springframework.http.MediaType.TEXT_PLAIN));
 
@@ -45,7 +45,7 @@ class ExternalCacheUpdateServiceTest {
 
     @Test
     void testUpdateCache_Negative() {
-        mockServer.expect(requestTo("http://localhost:8384/cache/update"))
+        mockServer.expect(requestTo("http://localhost:9002/cache/update"))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
 
@@ -59,7 +59,7 @@ class ExternalCacheUpdateServiceTest {
     void testUpdateCacheByBatchId_Positive() {
         Long batchId = 123L;
         String expectedResponse = "Cache updated successfully for batch " + batchId;
-        mockServer.expect(requestTo("http://localhost:8384/cache/update/batch/" + batchId))
+        mockServer.expect(requestTo("http://localhost:9002/cache/update/batch/" + batchId))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(expectedResponse, org.springframework.http.MediaType.TEXT_PLAIN));
 
@@ -72,7 +72,7 @@ class ExternalCacheUpdateServiceTest {
     @Test
     void testUpdateCacheByBatchId_Negative() {
         Long batchId = 123L;
-        mockServer.expect(requestTo("http://localhost:8384/cache/update/batch/" + batchId))
+        mockServer.expect(requestTo("http://localhost:9002/cache/update/batch/" + batchId))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
 
@@ -87,7 +87,7 @@ class ExternalCacheUpdateServiceTest {
         Long batchId = 123L;
         String stateName = "state1";
         String expectedResponse = "Cache updated successfully for batch " + batchId + " and state " + stateName;
-        mockServer.expect(requestTo("http://localhost:8384/cache/update/batch/" + batchId + "/state/" + stateName))
+        mockServer.expect(requestTo("http://localhost:9002/cache/update/batch/" + batchId + "/state/" + stateName))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(expectedResponse, org.springframework.http.MediaType.TEXT_PLAIN));
 
@@ -101,7 +101,7 @@ class ExternalCacheUpdateServiceTest {
     void testUpdateCacheByBatchIdAndState_Negative() {
         Long batchId = 123L;
         String stateName = "state1";
-        mockServer.expect(requestTo("http://localhost:8384/cache/update/batch/" + batchId + "/state/" + stateName))
+        mockServer.expect(requestTo("http://localhost:9002/cache/update/batch/" + batchId + "/state/" + stateName))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
 
@@ -117,7 +117,7 @@ class ExternalCacheUpdateServiceTest {
         String stateName = "state1";
         String language = "en";
         String expectedResponse = "Cache updated successfully for batch " + batchId + ", state " + stateName + ", and language " + language;
-        mockServer.expect(requestTo("http://localhost:8384/cache/update/batch/" + batchId + "/state/" + stateName + "/language/" + language))
+        mockServer.expect(requestTo("http://localhost:9002/cache/update/batch/" + batchId + "/state/" + stateName + "/language/" + language))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withSuccess(expectedResponse, org.springframework.http.MediaType.TEXT_PLAIN));
 
@@ -132,7 +132,7 @@ class ExternalCacheUpdateServiceTest {
         Long batchId = 123L;
         String stateName = "state1";
         String language = "en";
-        mockServer.expect(requestTo("http://localhost:8384/cache/update/batch/" + batchId + "/state/" + stateName + "/language/" + language))
+        mockServer.expect(requestTo("http://localhost:9002/cache/update/batch/" + batchId + "/state/" + stateName + "/language/" + language))
                 .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
 
